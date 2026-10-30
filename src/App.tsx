@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArabicScaleTuning,
   EfxSettings,
@@ -67,6 +67,8 @@ export default function App() {
   const [modWheel, setModWheel] = useState<number>(0);
   const [sustain, setSustain] = useState<boolean>(false);
   const [activeNotes, setActiveNotes] = useState<Set<number>>(new Set());
+  // Ordered stack of held notes for monophonic Native mode legato transitions.
+  const nativeHeldNotesRef = useRef<number[]>([]);
   const [midiActive, setMidiActive] = useState<boolean>(false);
   const [customTracks, setCustomTracks] = useState<Mp3Track[]>([]);
   const [masterOctave, setMasterOctave] = useState<number>(0); // -3 to +3 octaves
@@ -260,6 +262,10 @@ export default function App() {
 
       if (audioMode === 'native') {
         const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
+        // Keep the most recently pressed key as the sounding monophonic note.
+        // This lets an older key be released without cutting off the newer key.
+        nativeHeldNotesRef.current = nativeHeldNotesRef.current.filter((n) => n !== shifted);
+        nativeHeldNotesRef.current.push(shifted);
         void nativeClarinet.noteOn(shifted, velocity).catch((error) => {
           console.error('Native clarinet noteOn failed:', error);
         });
@@ -296,9 +302,25 @@ export default function App() {
       });
 
       if (audioMode === 'native') {
-        void nativeClarinet.noteOff().catch((error) => {
-          console.error('Native clarinet noteOff failed:', error);
-        });
+        const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
+        const wasTopNote = nativeHeldNotesRef.current[nativeHeldNotesRef.current.length - 1] === shifted;
+        nativeHeldNotesRef.current = nativeHeldNotesRef.current.filter((n) => n !== shifted);
+
+        // Ignore note-off for a key that is no longer the sounding note.
+        // If the top key is released while another key is still held, return
+        // to the most recently held remaining key instead of silencing audio.
+        if (wasTopNote) {
+          const fallbackNote = nativeHeldNotesRef.current[nativeHeldNotesRef.current.length - 1];
+          if (fallbackNote !== undefined) {
+            void nativeClarinet.noteOn(fallbackNote, 0.8).catch((error) => {
+              console.error('Native clarinet legato fallback failed:', error);
+            });
+          } else {
+            void nativeClarinet.noteOff().catch((error) => {
+              console.error('Native clarinet noteOff failed:', error);
+            });
+          }
+        }
         return;
       }
 
