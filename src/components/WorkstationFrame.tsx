@@ -13,6 +13,8 @@ interface WorkstationFrameProps {
   onTogglePiano: () => void;
   children: React.ReactNode;
   midiActive: boolean;
+  audioMode: 'sf2' | 'native';
+  onToggleAudioMode: () => void;
   masterOctave?: number;
   masterTranspose?: number;
 }
@@ -27,6 +29,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   onTogglePiano,
   children,
   midiActive,
+  audioMode,
+  onToggleAudioMode,
   masterOctave = 0,
   masterTranspose = 0,
 }) => {
@@ -162,8 +166,19 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
             </div>
           </div>
 
-          {/* Top Right: KEY & Fullscreen Controls */}
+          {/* Top Right: Audio engine, KEY & Fullscreen Controls */}
           <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={onToggleAudioMode}
+              className={`px-1.5 py-0.5 rounded border text-[9px] sm:text-[10px] font-mono font-bold transition-all ${
+                audioMode === 'native'
+                  ? 'bg-gradient-to-b from-amber-300 to-yellow-500 text-black border-yellow-200'
+                  : 'bg-[#1e222a] text-zinc-300 border-[#383d4a] hover:border-zinc-500'
+              }`}
+              title="Pilih mesin suara"
+            >
+              {audioMode === 'native' ? 'NATIVE' : 'SF2'}
+            </button>
             {/* Keyboard Controller Button (KEY) */}
             <button
               onClick={onTogglePiano}
