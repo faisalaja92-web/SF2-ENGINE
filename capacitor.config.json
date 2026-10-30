@@ -1,0 +1,8 @@
+{
+  "appId": "com.faisalaja92.sf2engine",
+  "appName": "SF2 ENGINE",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#080b12"
+  }
+}
