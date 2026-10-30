@@ -37,7 +37,7 @@ jobs:
             echo "Android sdkmanager not found under $SDK_ROOT"
             exit 1
           fi
-          CMAKE_PACKAGE="$("$SDKMANAGER" --list | awk '/cmake;[0-9]/{print $1}' | sort -V | tail -n 1)"
+          CMAKE_PACKAGE="$("$SDKMANAGER" --list | awk '/cmake;3\\.[0-9]/{print $1}' | sort -V | tail -n 1)"
           if [ -z "$CMAKE_PACKAGE" ]; then
             echo "No Android SDK CMake package found in sdkmanager catalog"
             exit 1
@@ -79,7 +79,7 @@ jobs:
               android_block = re.search(r'android\s*\{', source)
               if not android_block:
                   raise SystemExit("android { } block not found in app/build.gradle")
-              default_config = re.search(r'defaultConfig\\s*\\{', source)
+              default_config = re.search(r'defaultConfig\s*\{', source)
               if not default_config:
                   raise SystemExit("defaultConfig block not found in app/build.gradle")
               source = source[:default_config.end()] + """
