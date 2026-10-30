@@ -90,7 +90,14 @@ float ClarinetEngine::renderSample() {
         frequency_ = 440.0f * std::pow(
             2.0f, (static_cast<float>(activeNote_) - 69.0f) / 12.0f);
         velocity_ = requestedVelocity_.load();
-        resetVoice(sampleRate_);
+
+        // Legato note change: retune the bore delay without clearing its
+        // stored wave energy or restarting the amplitude envelope. Clearing
+        // the delay here caused an audible gap between adjacent notes.
+        delayLength_ = static_cast<size_t>(std::clamp(
+            sampleRate_ / (2.0 * static_cast<double>(frequency_)),
+            8.0, static_cast<double>(kMaxDelaySamples)));
+        delayWrite_ %= delayLength_;
     } else {
         velocity_ = requestedVelocity_.load();
     }
