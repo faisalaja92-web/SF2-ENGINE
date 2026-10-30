@@ -4,8 +4,8 @@
 #include <cmath>
 
 namespace {
-constexpr float kBoreLoss = 0.9965f;
-constexpr float kOutputGain = 0.18f;
+constexpr float kBoreLoss = 0.985f;
+constexpr float kOutputGain = 0.24f;
 }
 
 ClarinetEngine::~ClarinetEngine() {
@@ -57,7 +57,8 @@ void ClarinetEngine::stop() {
 
 void ClarinetEngine::resetVoice(double sampleRate) {
     sampleRate_ = sampleRate > 0.0 ? sampleRate : 48000.0;
-    // A closed-open clarinet bore has a round-trip delay of approximately one period.
+    // The round-trip delay of a closed-open bore is approximately half a
+    // wavelength, giving a fundamental close to sampleRate / (2 * delay).
     delayLength_ = static_cast<size_t>(std::clamp(
         sampleRate_ / (2.0 * static_cast<double>(frequency_)),
         8.0, static_cast<double>(kMaxDelaySamples)));
@@ -94,32 +95,37 @@ float ClarinetEngine::renderSample() {
     }
 
     const bool gate = gate_.load();
+    // Smooth attack and a longer release prevent clicks and abrupt pumping.
     const float targetEnvelope = gate ? 1.0f : 0.0f;
-    const float coefficient = gate ? 0.0018f : 0.00045f;
+    const float coefficient = gate ? 0.00032f : 0.00012f;
     envelope_ += (targetEnvelope - envelope_) * coefficient;
 
     const float incoming = boreDelay_[delayWrite_];
-    const float airPressure = breath_.load() * velocity_ * envelope_;
-    const float differential = airPressure - incoming;
+    const float mouthPressure = breath_.load() * velocity_ * envelope_;
+    const float pressureDifference = mouthPressure - incoming;
 
-    // Simplified single-reed pressure/flow non-linearity; this is not yet a
-    // complete instrument model with tone-hole geometry and register venting.
-    const float reedOpening = std::clamp(0.78f - 0.92f * differential, 0.0f, 1.0f);
-    const float reedFlow = reedOpening * std::sqrt(std::abs(differential) + 1.0e-6f)
-                           * (differential >= 0.0f ? 1.0f : -1.0f);
+    // Nonlinear single-reed excitation feeding a lossy bore waveguide.
+    // The saturated feedback loop is intentionally kept bounded so it can
+    // sustain a tone while the key is held and decay after note-off.
+    const float reedOpening = std::clamp(
+        1.0f - 0.72f * std::abs(pressureDifference), 0.08f, 1.0f);
+    const float reedFlow = reedOpening * std::tanh(pressureDifference * 3.2f);
 
     noiseState_ = noiseState_ * 1664525u + 1013904223u;
     const float breathNoise =
         (static_cast<float>((noiseState_ >> 8) & 0xffffu) / 32768.0f - 1.0f)
-        * 0.0015f * airPressure;
+        * 0.00035f * mouthPressure;
 
-    const float reflected = std::tanh(reedFlow * 2.2f + breathNoise);
-    boreDelay_[delayWrite_] = std::clamp(reflected * kBoreLoss, -0.98f, 0.98f);
+    const float reflected = -kBoreLoss * incoming
+        + 0.72f * reedFlow + breathNoise;
+    boreDelay_[delayWrite_] = std::clamp(reflected, -0.92f, 0.92f);
     delayWrite_ = (delayWrite_ + 1) % delayLength_;
 
-    const float output = (incoming - previousPressure_) * 0.55f + incoming * 0.45f;
+    // Remove the DC component without multiplying the signal by the
+    // amplitude envelope a second time.
+    const float output = incoming - 0.995f * previousPressure_;
     previousPressure_ = incoming;
-    return std::clamp(output * envelope_ * kOutputGain, -0.9f, 0.9f);
+    return std::clamp(output * kOutputGain, -0.9f, 0.9f);
 }
 
 oboe::DataCallbackResult ClarinetEngine::onAudioReady(
