@@ -10,11 +10,30 @@ type NativeClarinetPlugin = {
 
 const NativeClarinet = registerPlugin<NativeClarinetPlugin>('NativeClarinet');
 
+let started = false;
+let startTask: Promise<void> | null = null;
+
+async function ensureStarted() {
+  if (started) return;
+  if (!startTask) {
+    startTask = NativeClarinet.start()
+      .then(() => { started = true; })
+      .finally(() => { startTask = null; });
+  }
+  await startTask;
+}
+
 export const nativeClarinet = {
-  start: () => NativeClarinet.start(),
-  stop: () => NativeClarinet.stop(),
-  noteOn: (note: number, velocity = 0.8) =>
-    NativeClarinet.noteOn({ note, velocity }),
-  noteOff: () => NativeClarinet.noteOff(),
+  start: ensureStarted,
+  stop: async () => {
+    if (!started) return;
+    await NativeClarinet.stop();
+    started = false;
+  },
+  noteOn: async (note: number, velocity = 0.8) => {
+    await ensureStarted();
+    await NativeClarinet.noteOn({ note, velocity });
+  },
+  noteOff: () => started ? NativeClarinet.noteOff() : Promise.resolve(),
   setBreath: (value: number) => NativeClarinet.setBreath({ value }),
 };
