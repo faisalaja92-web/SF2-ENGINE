@@ -37,7 +37,7 @@ jobs:
             echo "Android sdkmanager not found under $SDK_ROOT"
             exit 1
           fi
-          CMAKE_PACKAGE="$("$SDKMANAGER" --list | awk '/cmake;3\\.[0-9]/{print $1}' | sort -V | tail -n 1)"
+          CMAKE_PACKAGE="$("$SDKMANAGER" --list | awk '/cmake;3\.[0-9]/{print $1}' | sort -V | tail -n 1)"
           if [ -z "$CMAKE_PACKAGE" ]; then
             echo "No Android SDK CMake package found in sdkmanager catalog"
             exit 1
