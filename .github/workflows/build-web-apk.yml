@@ -40,6 +40,45 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Create gold SOUNDFONT ENGINE launcher icon
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick fonts-dejavu-core
+          cat > /tmp/sf2-launcher.svg <<'SVG'
+          <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+            <defs>
+              <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff6b0"/>
+                <stop offset="0.22" stop-color="#ffd84d"/>
+                <stop offset="0.52" stop-color="#b87508"/>
+                <stop offset="0.76" stop-color="#ffdf62"/>
+                <stop offset="1" stop-color="#8a4b00"/>
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-30%" width="140%" height="160%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="512" height="512" rx="92" fill="#050505"/>
+            <path d="M54 194 H458 M94 332 H418" stroke="#9b650c" stroke-width="2" opacity=".8"/>
+            <text x="256" y="246" text-anchor="middle" font-family="DejaVu Sans" font-size="65" font-weight="bold" letter-spacing="-3" fill="url(#gold)" stroke="#6e4100" stroke-width="1.5" paint-order="stroke" filter="url(#glow)">SOUNDFONT</text>
+            <text x="256" y="316" text-anchor="middle" font-family="DejaVu Sans" font-size="65" font-weight="bold" letter-spacing="8" fill="url(#gold)" stroke="#6e4100" stroke-width="1.5" paint-order="stroke" filter="url(#glow)">ENGINE</text>
+            <path d="M120 357 H392" stroke="#eab83b" stroke-width="3" opacity=".85"/>
+          </svg>
+          SVG
+          for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $spec
+            density="$1"
+            pixels="$2"
+            mkdir -p "android/app/src/main/res/mipmap-$density"
+            convert -background none /tmp/sf2-launcher.svg -resize "${pixels}x${pixels}" "android/app/src/main/res/mipmap-$density/ic_launcher.png"
+            cp "android/app/src/main/res/mipmap-$density/ic_launcher.png" "android/app/src/main/res/mipmap-$density/ic_launcher_round.png"
+          done
+          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
+          convert -background none /tmp/sf2-launcher.svg -resize 512x512 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+          echo "Created gold SOUNDFONT ENGINE launcher icons."
+          
       - name: Configure landscape and immersive fullscreen
         shell: bash
         run: |
