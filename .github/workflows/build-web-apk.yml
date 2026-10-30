@@ -37,7 +37,17 @@ jobs:
             echo "Android sdkmanager not found under $SDK_ROOT"
             exit 1
           fi
-          yes | "$SDKMANAGER" "ndk;27.2.12479018" "cmake;3.22.1.1"
+          CMAKE_PACKAGE="$("$SDKMANAGER" --list | awk '/cmake;[0-9]/{print $1}' | sort -V | tail -n 1)"
+          if [ -z "$CMAKE_PACKAGE" ]; then
+            echo "No Android SDK CMake package found in sdkmanager catalog"
+            exit 1
+          fi
+          CMAKE_VERSION="${CMAKE_PACKAGE#cmake;}"
+          echo "Using Android CMake $CMAKE_VERSION"
+          echo "ANDROID_CMAKE_VERSION=$CMAKE_VERSION" >> "$GITHUB_ENV"
+          yes | "$SDKMANAGER" "ndk;27.2.12479018" "$CMAKE_PACKAGE" || {
+            "$SDKMANAGER" "ndk;27.2.12479018" "$CMAKE_PACKAGE"
+          }
 
       - name: Install dependencies
         run: npm install
@@ -83,7 +93,7 @@ jobs:
               externalNativeBuild {
                   cmake {
                       path file("../../native-audio/CMakeLists.txt")
-                      version "3.22.1"
+                      version System.getenv("ANDROID_CMAKE_VERSION")
                   }
               }
           """ + source[android_block.end():]
