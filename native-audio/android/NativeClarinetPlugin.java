@@ -28,7 +28,7 @@ public class NativeClarinetPlugin extends Plugin {
             }
             call.resolve();
         } catch (UnsatisfiedLinkError error) {
-            call.reject("Native audio library is not available.", error);
+            call.reject("Native audio library is not available.");
         }
     }
 
