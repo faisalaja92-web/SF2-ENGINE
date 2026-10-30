@@ -14,6 +14,7 @@ import { INITIAL_BANKS } from './audio/defaultBanks';
 import { INITIAL_SF2_PRESETS } from './audio/builtInSounds';
 import { ParsedSoundFont } from './audio/sf2Parser';
 import { audioEngine } from './audio/audioEngine';
+import { nativeClarinet } from './audio/nativeClarinet';
 import { WorkstationFrame } from './components/WorkstationFrame';
 import { ListView } from './components/views/ListView';
 import { BankView } from './components/views/BankView';
@@ -59,6 +60,7 @@ export default function App() {
   // Default view is LIST
   const [currentView, setCurrentView] = useState<ViewMenu>('LIST');
   const [isPianoVisible, setIsPianoVisible] = useState<boolean>(false);
+  const [audioMode, setAudioMode] = useState<'sf2' | 'native'>('sf2');
   const [isBooting, setIsBooting] = useState<boolean>(true);
 
   const [pitchBend, setPitchBend] = useState<number>(0);
@@ -256,6 +258,21 @@ export default function App() {
       triggerMidiLed();
       setActiveNotes((prev) => new Set(prev).add(note));
 
+      if (audioMode === 'native') {
+        const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
+        void nativeClarinet.noteOn(shifted, velocity).catch((error) => {
+          console.error('Native clarinet noteOn failed:', error);
+        });
+        return;
+      }
+
+      if (audioMode === 'native') {
+        void nativeClarinet.noteOff().catch((error) => {
+          console.error('Native clarinet noteOff failed:', error);
+        });
+        return;
+      }
+
       if (splitSettings.enabled) {
         const isLower = note < splitSettings.splitPoint;
         const targetLayerIds = isLower ? splitSettings.lowerLayers : splitSettings.upperLayers;
@@ -274,7 +291,7 @@ export default function App() {
         audioEngine.triggerNoteOn(shifted, velocity, layers, efx, scaleTuning);
       }
     },
-    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings]
+    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings, audioMode]
   );
 
   const handleNoteOff = useCallback(
@@ -295,7 +312,7 @@ export default function App() {
         audioEngine.triggerNoteOff(shifted, layers, efx);
       }
     },
-    [layers, efx, masterOctave, masterTranspose, splitSettings]
+    [layers, efx, masterOctave, masterTranspose, splitSettings, audioMode]
   );
 
   const handlePitchBendChange = (val: number) => {
@@ -338,6 +355,16 @@ export default function App() {
       triggerMidiLed();
     };
     const handleReleaseSustained = (e: CustomEvent) => handleNoteOff(e.detail.note);
+    const handleMidiBreath = (e: CustomEvent) => {
+      const raw = Number(e.detail?.value);
+      if (Number.isFinite(raw)) {
+        const normalized = raw > 1 ? raw / 127 : raw;
+        if (audioMode === 'native') {
+          void nativeClarinet.setBreath(Math.max(0, Math.min(1, normalized)));
+        }
+      }
+      triggerMidiLed();
+    };
     const handleMidiActivityCc = () => triggerMidiLed();
 
     window.addEventListener('sf2-midi-noteon', handleMidiNoteOn as EventListener);
@@ -345,7 +372,7 @@ export default function App() {
     window.addEventListener('sf2-midi-pitchbend', handleMidiPitchBend as EventListener);
     window.addEventListener('sf2-midi-modwheel', handleMidiModWheel as EventListener);
     window.addEventListener('sf2-midi-sustain', handleMidiSustain as EventListener);
-    window.addEventListener('sf2-midi-breath', handleMidiActivityCc as EventListener);
+    window.addEventListener('sf2-midi-breath', handleMidiBreath as EventListener);
     window.addEventListener('sf2-midi-expression', handleMidiActivityCc as EventListener);
     window.addEventListener('sf2-midi-aftertouch', handleMidiActivityCc as EventListener);
     window.addEventListener('sf2-release-sustained-note', handleReleaseSustained as EventListener);
@@ -356,12 +383,12 @@ export default function App() {
       window.removeEventListener('sf2-midi-pitchbend', handleMidiPitchBend as EventListener);
       window.removeEventListener('sf2-midi-modwheel', handleMidiModWheel as EventListener);
       window.removeEventListener('sf2-midi-sustain', handleMidiSustain as EventListener);
-      window.removeEventListener('sf2-midi-breath', handleMidiActivityCc as EventListener);
+      window.removeEventListener('sf2-midi-breath', handleMidiBreath as EventListener);
       window.removeEventListener('sf2-midi-expression', handleMidiActivityCc as EventListener);
       window.removeEventListener('sf2-midi-aftertouch', handleMidiActivityCc as EventListener);
       window.removeEventListener('sf2-release-sustained-note', handleReleaseSustained as EventListener);
     };
-  }, [handleNoteOn, handleNoteOff, triggerMidiLed]);
+  }, [handleNoteOn, handleNoteOff, triggerMidiLed, audioMode]);
 
   const handleSoundFontLoaded = (sf: ParsedSoundFont) => {
     const newPresets = sf.presets.map((p, idx) => ({
@@ -431,6 +458,17 @@ export default function App() {
         isPianoVisible={isPianoVisible}
         onTogglePiano={() => setIsPianoVisible(!isPianoVisible)}
         midiActive={midiActive}
+        audioMode={audioMode}
+        onToggleAudioMode={() => {
+          setActiveNotes(new Set());
+          if (audioMode === 'native') {
+            void nativeClarinet.stop().catch((error) => console.error('Native clarinet stop failed:', error));
+            setAudioMode('sf2');
+          } else {
+            audioEngine.stopAllVoices(false);
+            setAudioMode('native');
+          }
+        }}
         masterOctave={masterOctave}
         masterTranspose={masterTranspose}
       >
