@@ -50,9 +50,9 @@ jobs:
             <defs>
               <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" stop-color="#fff6b0"/>
-                <stop offset="0.22" stop-color="#ffd84d"/>
-                <stop offset="0.52" stop-color="#b87508"/>
-                <stop offset="0.76" stop-color="#ffdf62"/>
+                <stop offset=".22" stop-color="#ffd84d"/>
+                <stop offset=".52" stop-color="#b87508"/>
+                <stop offset=".76" stop-color="#ffdf62"/>
                 <stop offset="1" stop-color="#8a4b00"/>
               </linearGradient>
               <filter id="glow" x="-20%" y="-30%" width="140%" height="160%">
@@ -60,11 +60,10 @@ jobs:
                 <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
             </defs>
-            <rect width="512" height="512" rx="92" fill="#050505"/>
-            <path d="M54 194 H458 M94 332 H418" stroke="#9b650c" stroke-width="2" opacity=".8"/>
-            <text x="256" y="246" text-anchor="middle" font-family="DejaVu Sans" font-size="65" font-weight="bold" letter-spacing="-3" fill="url(#gold)" stroke="#6e4100" stroke-width="1.5" paint-order="stroke" filter="url(#glow)">SOUNDFONT</text>
+            <rect width="512" height="512" fill="#050505"/>
+            <text x="256" y="242" text-anchor="middle" font-family="DejaVu Sans" font-size="65" font-weight="bold" letter-spacing="-3" fill="url(#gold)" stroke="#6e4100" stroke-width="1.5" paint-order="stroke" filter="url(#glow)">SOUNDFONT</text>
             <text x="256" y="316" text-anchor="middle" font-family="DejaVu Sans" font-size="65" font-weight="bold" letter-spacing="8" fill="url(#gold)" stroke="#6e4100" stroke-width="1.5" paint-order="stroke" filter="url(#glow)">ENGINE</text>
-            <path d="M120 357 H392" stroke="#eab83b" stroke-width="3" opacity=".85"/>
+            <path d="M85 357 H427" stroke="#eab83b" stroke-width="3" opacity=".85"/>
           </svg>
           SVG
           for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
@@ -74,10 +73,23 @@ jobs:
             mkdir -p "android/app/src/main/res/mipmap-$density"
             convert -background none /tmp/sf2-launcher.svg -resize "${pixels}x${pixels}" "android/app/src/main/res/mipmap-$density/ic_launcher.png"
             cp "android/app/src/main/res/mipmap-$density/ic_launcher.png" "android/app/src/main/res/mipmap-$density/ic_launcher_round.png"
+            convert -background none /tmp/sf2-launcher.svg -resize "${pixels}x${pixels}" "android/app/src/main/res/mipmap-$density/ic_launcher_foreground.png"
           done
-          mkdir -p android/app/src/main/res/mipmap-xxxhdpi
-          convert -background none /tmp/sf2-launcher.svg -resize 512x512 android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
-          echo "Created gold SOUNDFONT ENGINE launcher icons."
+          mkdir -p android/app/src/main/res/mipmap-anydpi-v26
+          cat > android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml <<'XML'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          XML
+          cp android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+          mkdir -p android/app/src/main/res/values
+          cat > android/app/src/main/res/values/ic_launcher_background.xml <<'XML'
+          <resources>
+              <color name="ic_launcher_background">#050505</color>
+          </resources>
+          XML
+          echo "Created legacy and adaptive gold SOUNDFONT ENGINE launcher icons."
           
       - name: Configure landscape and immersive fullscreen
         shell: bash
