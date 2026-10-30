@@ -64,14 +64,17 @@ jobs:
               android_block = re.search(r'android\s*\{', source)
               if not android_block:
                   raise SystemExit("android { } block not found in app/build.gradle")
-              source = source[:android_block.end()] + """
-              defaultConfig {
+              default_config = re.search(r'defaultConfig\\s*\\{', source)
+              if not default_config:
+                  raise SystemExit("defaultConfig block not found in app/build.gradle")
+              source = source[:default_config.end()] + """
                   externalNativeBuild {
                       cmake {
                           cppFlags "-std=c++17"
                       }
                   }
-              }
+          """ + source[default_config.end():]
+              source = source[:android_block.end()] + """
               externalNativeBuild {
                   cmake {
                       path file("../../native-audio/CMakeLists.txt")
@@ -223,12 +226,12 @@ jobs:
           import_line = "import com.faisalaja92.sf2engine.NativeClarinetPlugin;"
           if import_line not in java:
               pos = java.find(";")
-              java = java[:pos + 1] + "\\n" + import_line + java[pos + 1:]
+              java = java[:pos + 1] + "\n" + import_line + java[pos + 1:]
           marker = "public void onCreate(Bundle savedInstanceState) {"
           if marker not in java:
               raise SystemExit("MainActivity onCreate method not found")
           if "registerPlugin(NativeClarinetPlugin.class)" not in java:
-              java = java.replace(marker, marker + "\\n        registerPlugin(NativeClarinetPlugin.class);")
+              java = java.replace(marker, marker + "\n        registerPlugin(NativeClarinetPlugin.class);")
           main.write_text(java, encoding="utf-8")
           print("Native clarinet plugin registered.")
           PY
