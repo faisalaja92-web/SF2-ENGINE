@@ -4,8 +4,9 @@
 #include <cmath>
 
 namespace {
-constexpr float kBoreLoss = 0.985f;
-constexpr float kOutputGain = 0.24f;
+constexpr float kBoreLoss = 0.982f;
+constexpr float kReleaseBoreLoss = 0.72f;
+constexpr float kOutputGain = 0.20f;
 }
 
 ClarinetEngine::~ClarinetEngine() {
@@ -95,9 +96,10 @@ float ClarinetEngine::renderSample() {
     }
 
     const bool gate = gate_.load();
-    // Smooth attack and a longer release prevent clicks and abrupt pumping.
+    // Keep attack smooth, but make note-off decisive. The bore feedback is
+    // damped separately below so stored wave energy cannot ring indefinitely.
     const float targetEnvelope = gate ? 1.0f : 0.0f;
-    const float coefficient = gate ? 0.00032f : 0.00012f;
+    const float coefficient = gate ? 0.00032f : 0.00085f;
     envelope_ += (targetEnvelope - envelope_) * coefficient;
 
     const float incoming = boreDelay_[delayWrite_];
@@ -116,8 +118,9 @@ float ClarinetEngine::renderSample() {
         (static_cast<float>((noiseState_ >> 8) & 0xffffu) / 32768.0f - 1.0f)
         * 0.00035f * mouthPressure;
 
-    const float reflected = -kBoreLoss * incoming
-        + 0.72f * reedFlow + breathNoise;
+    const float feedbackLoss = gate ? kBoreLoss : kReleaseBoreLoss;
+    const float excitation = gate ? 0.72f * reedFlow + breathNoise : 0.0f;
+    const float reflected = -feedbackLoss * incoming + excitation;
     boreDelay_[delayWrite_] = std::clamp(reflected, -0.92f, 0.92f);
     delayWrite_ = (delayWrite_ + 1) % delayLength_;
 
@@ -125,7 +128,10 @@ float ClarinetEngine::renderSample() {
     // amplitude envelope a second time.
     const float output = incoming - 0.995f * previousPressure_;
     previousPressure_ = incoming;
-    return std::clamp(output * kOutputGain, -0.9f, 0.9f);
+    // Apply the release envelope to the audible output as well as the
+    // excitation. This guarantees a clean key-up even if the delay retains
+    // a small amount of energy.
+    return std::clamp(output * envelope_ * kOutputGain, -0.9f, 0.9f);
 }
 
 oboe::DataCallbackResult ClarinetEngine::onAudioReady(
