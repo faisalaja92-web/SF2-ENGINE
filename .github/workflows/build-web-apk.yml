@@ -27,12 +27,17 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Android SDK and native toolchain
-        uses: android-actions/setup-android@v3
-
       - name: Install Android NDK and CMake
+        shell: bash
         run: |
-          sdkmanager "ndk;27.2.12479018" "cmake;3.22.1.1"
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -name sdkmanager -type f | sort | tail -n 1)"
+          if [ -z "$SDKMANAGER" ]; then
+            echo "Android sdkmanager not found under $SDK_ROOT"
+            exit 1
+          fi
+          yes | "$SDKMANAGER" "ndk;27.2.12479018" "cmake;3.22.1.1"
 
       - name: Install dependencies
         run: npm install
