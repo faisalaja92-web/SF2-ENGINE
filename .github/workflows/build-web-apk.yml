@@ -2,7 +2,7 @@ name: Build SF2 ENGINE Android APK
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, native-audio-prototype]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,13 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Set up Android SDK and native toolchain
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK and CMake
+        run: |
+          sdkmanager "ndk;27.2.12479018" "cmake;3.22.1.1"
+
       - name: Install dependencies
         run: npm install
 
@@ -39,6 +46,58 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+
+      - name: Integrate native clarinet plugin and CMake
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p android/app/src/main/java/com/faisalaja92/sf2engine
+          cp native-audio/android/NativeClarinetPlugin.java android/app/src/main/java/com/faisalaja92/sf2engine/NativeClarinetPlugin.java
+
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          gradle = Path("android/app/build.gradle")
+          source = gradle.read_text(encoding="utf-8")
+          if "native-audio/CMakeLists.txt" not in source:
+              android_block = re.search(r'android\\s*\\{', source)
+              if not android_block:
+                  raise SystemExit("android { } block not found in app/build.gradle")
+              source = source[:android_block.end()] + """
+              defaultConfig {
+                  externalNativeBuild {
+                      cmake {
+                          cppFlags "-std=c++17"
+                      }
+                  }
+              }
+              externalNativeBuild {
+                  cmake {
+                      path file("../../native-audio/CMakeLists.txt")
+                      version "3.22.1"
+                  }
+              }
+          """ + source[android_block.end():]
+              gradle.write_text(source, encoding="utf-8")
+
+          candidates = list(Path("android/app/src/main").rglob("MainActivity.java"))
+          if not candidates:
+              raise SystemExit("MainActivity.java not found")
+          main = candidates[0]
+          java = main.read_text(encoding="utf-8")
+          import_line = "import com.faisalaja92.sf2engine.NativeClarinetPlugin;"
+          if import_line not in java:
+              package_end = java.find(";")
+              java = java[:package_end + 1] + "\\n" + import_line + java[package_end + 1:]
+          if "registerPlugin(NativeClarinetPlugin.class)" not in java:
+              java = java.replace(
+                  "public void onCreate(Bundle savedInstanceState) {",
+                  "public void onCreate(Bundle savedInstanceState) {\\n        registerPlugin(NativeClarinetPlugin.class);"
+              )
+          main.write_text(java, encoding="utf-8")
+          print("Registered NativeClarinetPlugin and configured CMake.")
+          PY
 
       - name: Create gold SOUNDFONT ENGINE launcher icon
         shell: bash
