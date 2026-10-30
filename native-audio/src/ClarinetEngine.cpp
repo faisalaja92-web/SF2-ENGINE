@@ -59,7 +59,7 @@ void ClarinetEngine::resetVoice(double sampleRate) {
     sampleRate_ = sampleRate > 0.0 ? sampleRate : 48000.0;
     // A closed-open clarinet bore has a round-trip delay of approximately one period.
     delayLength_ = static_cast<size_t>(std::clamp(
-        sampleRate_ / static_cast<double>(frequency_),
+        sampleRate_ / (2.0 * static_cast<double>(frequency_)),
         8.0, static_cast<double>(kMaxDelaySamples)));
     boreDelay_.fill(0.0f);
     delayWrite_ = 0;
