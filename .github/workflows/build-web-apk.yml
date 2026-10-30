@@ -61,7 +61,7 @@ jobs:
           gradle = Path("android/app/build.gradle")
           source = gradle.read_text(encoding="utf-8")
           if "native-audio/CMakeLists.txt" not in source:
-              android_block = re.search(r'android\\s*\\{', source)
+              android_block = re.search(r'android\s*\{', source)
               if not android_block:
                   raise SystemExit("android { } block not found in app/build.gradle")
               source = source[:android_block.end()] + """
@@ -89,11 +89,11 @@ jobs:
           import_line = "import com.faisalaja92.sf2engine.NativeClarinetPlugin;"
           if import_line not in java:
               package_end = java.find(";")
-              java = java[:package_end + 1] + "\\n" + import_line + java[package_end + 1:]
+              java = java[:package_end + 1] + "\n" + import_line + java[package_end + 1:]
           if "registerPlugin(NativeClarinetPlugin.class)" not in java:
               java = java.replace(
                   "public void onCreate(Bundle savedInstanceState) {",
-                  "public void onCreate(Bundle savedInstanceState) {\\n        registerPlugin(NativeClarinetPlugin.class);"
+                  "public void onCreate(Bundle savedInstanceState) {\n        registerPlugin(NativeClarinetPlugin.class);"
               )
           main.write_text(java, encoding="utf-8")
           print("Registered NativeClarinetPlugin and configured CMake.")
@@ -209,6 +209,28 @@ jobs:
               )
               main.write_text(java, encoding="utf-8")
           print("Configured sensorLandscape and immersive fullscreen.")
+          PY
+
+      - name: Register native clarinet plugin
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          main = next(iter(Path("android/app/src/main").rglob("MainActivity.java")), None)
+          if main is None:
+              raise SystemExit("MainActivity.java not found")
+          java = main.read_text(encoding="utf-8")
+          import_line = "import com.faisalaja92.sf2engine.NativeClarinetPlugin;"
+          if import_line not in java:
+              pos = java.find(";")
+              java = java[:pos + 1] + "\\n" + import_line + java[pos + 1:]
+          marker = "public void onCreate(Bundle savedInstanceState) {"
+          if marker not in java:
+              raise SystemExit("MainActivity onCreate method not found")
+          if "registerPlugin(NativeClarinetPlugin.class)" not in java:
+              java = java.replace(marker, marker + "\\n        registerPlugin(NativeClarinetPlugin.class);")
+          main.write_text(java, encoding="utf-8")
+          print("Native clarinet plugin registered.")
           PY
 
       - name: Build debug APK
