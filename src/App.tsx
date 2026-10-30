@@ -266,13 +266,6 @@ export default function App() {
         return;
       }
 
-      if (audioMode === 'native') {
-        void nativeClarinet.noteOff().catch((error) => {
-          console.error('Native clarinet noteOff failed:', error);
-        });
-        return;
-      }
-
       if (splitSettings.enabled) {
         const isLower = note < splitSettings.splitPoint;
         const targetLayerIds = isLower ? splitSettings.lowerLayers : splitSettings.upperLayers;
@@ -301,6 +294,13 @@ export default function App() {
         next.delete(note);
         return next;
       });
+
+      if (audioMode === 'native') {
+        void nativeClarinet.noteOff().catch((error) => {
+          console.error('Native clarinet noteOff failed:', error);
+        });
+        return;
+      }
 
       if (splitSettings.enabled) {
         const isLower = note < splitSettings.splitPoint;
