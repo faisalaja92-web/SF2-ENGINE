@@ -55,9 +55,9 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
   const selectedCents = scaleTuning.offsets[selectedKey] ?? 0;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-2 sm:p-2.5 bg-[#14161c] text-zinc-100 font-mono overflow-hidden select-none">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-mono overflow-hidden select-none">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#2b303d] text-xs shrink-0">
+      <div className="flex items-center justify-between pb-1 border-b border-[#2b303d] text-xs shrink-0">
         <div className="flex items-center gap-2">
           <button
             onClick={() => onUpdateScale({ ...scaleTuning, enabled: !scaleTuning.enabled })}
@@ -84,8 +84,8 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
       </div>
 
       {/* Main Center: 1-Octave Keyboard with Detune Cents Directly on Tuts */}
-      <div className="flex-1 flex flex-col items-center justify-center py-1 overflow-hidden">
-        <div className="relative flex h-28 sm:h-36 md:h-44 bg-[#0a0c10] border-2 border-[#2f3545] rounded-lg p-1.5 shadow-2xl select-none max-w-full">
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center py-0.5 overflow-hidden">
+        <div className="relative flex h-24 sm:h-28 md:h-32 bg-[#0a0c10] border-2 border-[#2f3545] rounded-lg p-1.5 shadow-2xl select-none max-w-full">
           {NOTE_NAMES.map((name, pitchClass) => {
             const isBlack = NOTE_IS_BLACK[pitchClass];
             const cents = scaleTuning.offsets[pitchClass] ?? 0;
@@ -98,11 +98,11 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
             const isBlackSelected = blackPitch !== null && selectedKey === blackPitch;
 
             return (
-              <div key={pitchClass} className="relative flex flex-col justify-end w-9 sm:w-12 md:w-14">
+              <div key={pitchClass} className="relative flex flex-col justify-end w-7 sm:w-9 md:w-11">
                 {/* White Key */}
                 <div
                   onClick={() => handleKeyClick(pitchClass)}
-                  className={`w-full h-24 sm:h-32 md:h-40 rounded-b border border-zinc-600 cursor-pointer flex flex-col justify-end items-center pb-1.5 transition-all ${
+                  className={`w-full h-20 sm:h-24 md:h-28 rounded-b border border-zinc-600 cursor-pointer flex flex-col justify-end items-center pb-1.5 transition-all ${
                     isSelected
                       ? 'bg-gradient-to-b from-yellow-200 via-amber-300 to-yellow-400 text-black font-black border-yellow-300 shadow-[0_0_15px_rgba(250,204,21,0.8)] scale-[1.02] z-10'
                       : 'bg-gradient-to-b from-white via-zinc-100 to-zinc-300 hover:bg-zinc-200 text-black'
@@ -127,7 +127,7 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
                       e.stopPropagation();
                       handleKeyClick(blackPitch);
                     }}
-                    className={`absolute top-0 -right-3 sm:-right-3.5 md:-right-4 w-6 sm:w-7 md:w-8 h-15 sm:h-20 md:h-26 z-20 rounded-b cursor-pointer flex flex-col justify-end items-center pb-1 transition-all border border-black ${
+                    className={`absolute top-0 -right-3 sm:-right-3.5 md:-right-4 w-5 sm:w-6 md:w-7 h-12 sm:h-16 md:h-20 z-20 rounded-b cursor-pointer flex flex-col justify-end items-center pb-1 transition-all border border-black ${
                       isBlackSelected
                         ? 'bg-gradient-to-b from-yellow-300 to-amber-500 text-black font-black border-yellow-200 shadow-[0_0_15px_rgba(250,204,21,0.8)]'
                         : 'bg-gradient-to-b from-[#2b2d34] via-[#1a1c22] to-black hover:bg-zinc-800 text-white'
@@ -152,7 +152,7 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
       </div>
 
       {/* Bottom Detune Controls: Persistent -50 / 0 / +50 Selection (never resets to 0 when picking other keys!) */}
-      <div className="bg-[#101217] border border-[#262b37] rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs shrink-0 shadow-inner">
+      <div className="bg-[#101217] border border-[#262b37] rounded-lg px-1.5 py-1 flex items-center justify-between gap-2 text-xs shrink-0 shadow-inner">
         <div className="flex items-center gap-2 truncate">
           <span className="text-zinc-400 font-bold text-[10px]">TUTS TERPILIH:</span>
           <span className="text-xs sm:text-sm font-black text-black bg-gradient-to-r from-yellow-300 to-amber-400 px-2 py-0.5 rounded shadow-sm">
@@ -173,7 +173,7 @@ export const ScaleView: React.FC<ScaleViewProps> = ({ scaleTuning, onUpdateScale
               <button
                 key={val}
                 onClick={() => handleSelectTool(val)}
-                className={`px-3 py-1 rounded font-mono font-black text-[11px] sm:text-xs border transition-all ${
+                className={`px-2 py-0.5 rounded font-mono font-black text-[11px] sm:text-xs border transition-all ${
                   isToolActive
                     ? 'bg-gradient-to-b from-amber-400 to-yellow-500 text-black border-yellow-200 shadow-[0_0_12px_rgba(250,204,21,0.7)] scale-105'
                     : 'bg-[#1f232c] text-zinc-300 border-[#323847] hover:border-zinc-500 active:scale-95'
