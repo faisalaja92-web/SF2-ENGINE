@@ -156,7 +156,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
       </div>
 
       {/* Controller Wheels & Playable Keys */}
-      <div className="flex items-center justify-center gap-2 pt-0.5">
+      <div className="flex items-center justify-center gap-3 pt-1">
         {/* Pitch Bend Wheel (Spring return to center) */}
         <div className="flex flex-col items-center shrink-0">
           <span className="text-[8px] text-zinc-400 font-bold mb-0.5">PITCH</span>
@@ -165,13 +165,13 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
             onPointerMove={handlePitchBendPointerMove}
             onPointerUp={handlePitchBendPointerUp}
             onPointerCancel={handlePitchBendPointerUp}
-            className="w-6 h-14 sm:h-16 bg-[#161820] border border-[#353a47] rounded relative cursor-ns-resize flex items-center justify-center shadow-inner"
+            className="w-10 h-24 sm:h-28 bg-[#161820] border border-[#353a47] rounded relative cursor-ns-resize flex items-center justify-center shadow-inner touch-none"
             title="Pitch Bend Wheel"
           >
             <div className="absolute w-full h-[1px] bg-amber-600/70 top-1/2 pointer-events-none" />
             <div
-              className="w-6 h-2 bg-gradient-to-r from-amber-500 to-yellow-400 rounded transition-transform duration-75 shadow-[0_0_8px_#f59e0b] pointer-events-none"
-              style={{ transform: `translateY(${-pitchBend * 18}px)` }}
+              className="w-10 h-3 bg-gradient-to-r from-amber-500 to-yellow-400 rounded transition-transform duration-75 shadow-[0_0_8px_#f59e0b] pointer-events-none"
+              style={{ transform: `translateY(${-pitchBend * 38}px)` }}
             />
           </div>
         </div>
@@ -179,7 +179,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
         {/* Modulation Wheel (CC1 Vibrato depth) */}
         <div className="flex flex-col items-center shrink-0">
           <span className="text-[8px] text-zinc-400 font-bold mb-0.5">MOD</span>
-          <div className="w-7 h-18 sm:h-20 bg-[#161820] border border-[#353a47] rounded relative flex items-center justify-center p-0.5 shadow-inner">
+          <div className="w-10 h-24 sm:h-28 bg-[#161820] border border-[#353a47] rounded relative flex items-center justify-center p-1 shadow-inner touch-none">
             <input
               type="range"
               min="0"
@@ -187,7 +187,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
               step="0.02"
               value={modWheel}
               onChange={(e) => onModWheelChange(parseFloat(e.target.value))}
-              className="w-14 sm:w-16 accent-amber-400 cursor-pointer h-1.5 bg-zinc-800 rounded -rotate-90"
+              className="w-24 sm:w-28 accent-amber-400 cursor-pointer h-3 bg-zinc-800 rounded -rotate-90 touch-none"
               title="Modulation Wheel (CC1)"
             />
           </div>
