@@ -671,12 +671,13 @@ export class AudioEngine {
     if (harmonyNote !== undefined) {
       this.tercaHarmonyNotes.delete(note);
       this.heldKeys.delete(harmonyNote);
-      this.releaseNoteVoices(harmonyNote, layers, efx);
     }
     if (this.sustainPedal) {
       this.sustainedNotes.add(note);
+      if (harmonyNote !== undefined) this.sustainedNotes.add(harmonyNote);
       return;
     }
+    if (harmonyNote !== undefined) this.releaseNoteVoices(harmonyNote, layers, efx);
     this.releaseNoteVoices(note, layers, efx);
   }
 
