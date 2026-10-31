@@ -79,6 +79,8 @@ export class AudioEngine {
 
   // Cache
   private presetBuffers: Map<string, Map<number, { buffer: AudioBuffer; rootKey: number }>> = new Map();
+  private presetSources: Map<string, { soundFont: ParsedSoundFont; presetIndex: number }> = new Map();
+  private bundledSoundFontPromise: Promise<ParsedSoundFont> | null = null;
   public loadedSoundFonts: ParsedSoundFont[] = [];
   public customPresets: SoundPreset[] = [...INITIAL_SF2_PRESETS];
 
@@ -247,15 +249,38 @@ export class AudioEngine {
   }
 
   public getInstrumentBuffers(presetId: string): Map<number, { buffer: AudioBuffer; rootKey: number }> {
-    if (this.presetBuffers.has(presetId)) {
-      return this.presetBuffers.get(presetId)!;
+    const cached = this.presetBuffers.get(presetId);
+    if (cached) return cached;
+
+    const source = this.presetSources.get(presetId);
+    if (source) {
+      const ctx = this.ctx || this.initContext();
+      const buffers = source.soundFont.createPresetInstrument(ctx, source.presetIndex);
+      if (buffers.size > 0) {
+        this.presetBuffers.set(presetId, buffers);
+        return buffers;
+      }
     }
+
     if (this.ctx) {
-      const buffers = generateSoundFontBuffers(this.ctx, 0);
-      this.presetBuffers.set(presetId, buffers);
-      return buffers;
+      const fallback = generateSoundFontBuffers(this.ctx, 0);
+      this.presetBuffers.set(presetId, fallback);
+      return fallback;
     }
     return new Map();
+  }
+
+  public loadBundledSoundFont(url: string): Promise<ParsedSoundFont> {
+    if (!this.bundledSoundFontPromise) {
+      this.bundledSoundFontPromise = (async () => {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`SoundFont bawaan gagal dimuat: HTTP ${response.status}`);
+        const blob = await response.blob();
+        const file = new File([blob], 'GeneralUser-GS.sf2', { type: 'application/octet-stream' });
+        return this.loadSoundFontFile(file);
+      })();
+    }
+    return this.bundledSoundFontPromise;
   }
 
   // SoundFont 2 File Importer
@@ -264,14 +289,9 @@ export class AudioEngine {
     const sf = parseSoundFont2(arrayBuffer);
     this.loadedSoundFonts.push(sf);
 
-    const ctx = this.initContext();
-
     sf.presets.forEach((p, idx) => {
       const presetId = `sf2_${sf.name}_${p.preset}_${idx}`;
-      const buffers = sf.createPresetInstrument(ctx, idx);
-      if (buffers.size > 0) {
-        this.presetBuffers.set(presetId, buffers);
-      }
+      this.presetSources.set(presetId, { soundFont: sf, presetIndex: idx });
       this.customPresets.push({
         id: presetId,
         name: p.name,
@@ -280,6 +300,12 @@ export class AudioEngine {
         presetIndex: idx,
         bank: p.bank,
       });
+
+      // The factory bank starts with the first General MIDI piano.
+      if (p.bank === 0 && p.preset === 0) {
+        this.presetSources.set('sf2_default_0', { soundFont: sf, presetIndex: idx });
+        this.presetBuffers.delete('sf2_default_0');
+      }
     });
 
     return sf;
