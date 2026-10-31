@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { audioEngine } from '../../audio/audioEngine';
 import { EfxSettings, EqualizerSettings, LayerEqSettings, LayerEfxSettings, SoundLayer } from '../../types/synth';
 import { Power, Sliders, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -441,7 +442,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
                     <div className="w-1 h-8 bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
                       <div
                         className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75"
-                        style={{ height: !isEnabled || isMuted ? '0%' : `${Math.round(vol * 90)}%` }}
+                        style={{ height: `${layerMeters[layer.id] || 0}%` }}
                       />
                       <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-60 pointer-events-none" />
                     </div>
