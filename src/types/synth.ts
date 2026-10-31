@@ -134,6 +134,8 @@ export interface SoundBank {
   equalizer: EqualizerSettings;
   scale: ArabicScaleTuning;
   split?: KeyboardSplitSettings;
+  masterOctave?: number;
+  masterTranspose?: number;
 }
 
 export interface Mp3Track {
