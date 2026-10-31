@@ -64,27 +64,27 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 
   // Right sidebar menu exactly modeled after Juzisound in Image 1 & 2
   const rightMenuItems: { id: ViewMenu; label: string; badge?: string }[] = [
-    { id: 'MP3', label: 'Mp3' },
-    { id: 'SCALE', label: 'Scala', badge: 'yellow' },
-    { id: 'EFX', label: 'Effects' },
-    { id: 'MIXER', label: 'Mixer' },
+    { id: 'MP3', label: 'MP3' },
+    { id: 'SCALE', label: 'SCALE', badge: 'yellow' },
+    { id: 'EFX', label: 'EFX' },
+    { id: 'MIXER', label: 'MIX' },
     { id: 'LOAD', label: 'LOAD' },
-    { id: 'BANK', label: 'MAIN' },
+    { id: 'BANK', label: 'BANK' },
     { id: 'LIST', label: 'LIST' },
   ];
 
   const pageNumbers = Array.from({ length: Math.max(1, totalPages) }, (_, i) => i + 1);
 
   return (
-    <div className="w-screen h-screen bg-[#0b1019] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1.5 sm:p-2">
+    <div className="w-screen h-[100dvh] bg-[#0b1019] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1">
       {/* Outer Heavy Bezel (Juzisound dark brushed metal styling from Image 1 & 2) */}
       <div className="flex-1 border border-[#303b4d] rounded-xl bg-[#121a27] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative">
         
         {/* TOP HARDWARE BAR (Modeled exactly after Image 1) */}
-        <div className="min-h-11 bg-[#182235] border-b border-[#34415a] flex items-center justify-between gap-2 px-2 sm:px-3 relative z-10 shrink-0">
+        <div className="h-9 min-h-9 bg-[#182235] border-b border-[#34415a] flex items-center justify-between gap-1 px-1.5 sm:px-2 relative z-10 shrink-0">
           
           {/* Left: Branding & Hardware Status Box */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 shrink-0 min-w-0">
             {/* Red / Yellow Hardware Status Box (as in Image 1 top left) */}
             <div className="flex items-center gap-1 bg-[#0f1115] px-1.5 py-0.5 rounded border border-[#373c47]">
               <span className="text-[9px] font-mono text-zinc-300 font-bold tracking-tight">
@@ -104,13 +104,13 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
             </div>
 
             {/* Gold Title: SF2 Engine */}
-            <span className="font-black text-xs sm:text-sm tracking-wider bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.6)] ml-1">
+            <span className="font-black text-[10px] sm:text-xs tracking-wide bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.6)] ml-1">
               SF2 Engine
             </span>
           </div>
 
           {/* Center: Juzisound Dynamic Pagination (1 in Yellow, 2 3 4... in Deep Cobalt Blue) */}
-          <div className="flex items-center gap-1 max-w-[50%] sm:max-w-[58%] md:max-w-[65%] overflow-hidden">
+          <div className="flex items-center gap-1 max-w-[48%] sm:max-w-[58%] md:max-w-[62%] overflow-hidden">
             {totalPages > 6 && (
               <button
                 onClick={() => scrollPages('left')}
@@ -193,7 +193,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
         <div className="flex-1 flex overflow-hidden relative">
           
           {/* LEFT SIDE: Authentic Juzisound Dual Channel Full-Height Peak Meter */}
-          <div className="w-5 sm:w-6 md:w-7 bg-[#0d0e12] border-r border-[#262a33] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
+          <div className="w-3.5 bg-[#0d0e12] border-r border-[#262a33] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
             {/* Top Peak Value Header */}
             <span className="text-[8px] font-mono font-black text-red-500 tracking-tighter">
               -10
@@ -253,7 +253,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 
           {/* CENTER VIEWPORT (Dark gunmetal tone, smooth scrolling when KEY is open) */}
           <div
-            className={`flex-1 bg-[#16181f] flex flex-col relative transition-all ${
+            className={`flex-1 min-w-0 min-h-0 bg-[#121a27] flex flex-col relative transition-all ${
               isPianoVisible
                 ? 'overflow-y-auto pb-28 sm:pb-32 scroll-smooth'
                 : 'overflow-hidden'
@@ -263,14 +263,14 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-[60px] sm:w-[76px] md:w-[88px] bg-[#111a29] border-l border-[#34415a] flex flex-col justify-between p-1.5 sm:p-2 gap-1.5 select-none shrink-0">
+          <div className="w-[48px] sm:w-[52px] bg-[#111a29] border-l border-[#34415a] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => onSelectView(item.id)}
-                  className={`relative flex-1 min-h-[42px] flex flex-col items-center justify-center rounded-lg font-mono text-[10px] sm:text-xs tracking-wider transition-all ${
+                  className={`relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-md font-mono text-[8px] sm:text-[9px] tracking-tight transition-all ${
                     isActive
                       ? 'bg-amber-400 text-[#111827] font-black border border-amber-200 shadow-[0_3px_12px_rgba(245,158,11,0.22)]'
                       : 'bg-[#202d42] text-[#c5d2e4] border border-[#3a4b65] hover:bg-[#293a55] hover:text-white font-bold active:scale-95'
