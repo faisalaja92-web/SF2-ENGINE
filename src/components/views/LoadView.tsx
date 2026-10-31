@@ -36,9 +36,9 @@ export const LoadView: React.FC<LoadViewProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-3 sm:p-4 bg-[#14161c] text-zinc-100 font-mono overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1.5 bg-[#111a29] text-zinc-100 font-mono overflow-hidden">
       {/* Top Header */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#2b303d] text-xs shrink-0">
+      <div className="flex items-center justify-between pb-1 border-b border-[#2b303d] text-xs shrink-0">
         <div className="flex items-center gap-1.5">
           <FolderOpen size={14} className="text-amber-400" />
           <span className="text-zinc-200 font-bold text-xs tracking-wider">
@@ -51,10 +51,10 @@ export const LoadView: React.FC<LoadViewProps> = ({
       </div>
 
       {/* Main Center Uploader */}
-      <div className="flex-1 flex flex-col items-center justify-center py-2">
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center py-1">
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="w-full max-w-lg border-2 border-dashed border-[#444c5f] hover:border-amber-400 bg-gradient-to-b from-[#21242d] to-[#15171d] rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center cursor-pointer transition-all text-center shadow-[0_0_25px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]"
+          className="w-full max-w-lg border-2 border-dashed border-[#444c5f] hover:border-amber-400 bg-gradient-to-b from-[#21242d] to-[#15171d] rounded-lg p-3 sm:p-4 flex flex-col items-center justify-center cursor-pointer transition-all text-center shadow-[0_0_25px_rgba(0,0,0,0.8)] hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]"
         >
           <input
             type="file"
@@ -73,11 +73,11 @@ export const LoadView: React.FC<LoadViewProps> = ({
             </div>
           ) : (
             <>
-              <Upload size={38} className="text-amber-400 mb-3" />
-              <span className="text-base sm:text-lg font-bold text-zinc-100 tracking-wide">
+              <Upload size={28} className="text-amber-400 mb-3" />
+              <span className="text-xs sm:text-sm font-bold text-zinc-100 tracking-wide">
                 KLIK UNTUK MEMILIH FILE .SF2
               </span>
-              <span className="text-xs text-zinc-400 mt-1">
+              <span className="text-[10px] text-zinc-400 mt-1">
                 Drag &amp; drop SoundFont file (.sf2) ke area ini
               </span>
 
