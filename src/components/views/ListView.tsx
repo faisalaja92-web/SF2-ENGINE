@@ -97,9 +97,9 @@ export const ListView: React.FC<ListViewProps> = ({
   // 1-second hold to toggle layer ON / OFF
   const HOLD_DURATION_MS = 1000;
 
-  // 8 presets for current page
-  const startIndex = (currentPage - 1) * 8;
-  const pagePresets = allPresets.slice(startIndex, startIndex + 8);
+  // Four built-in instruments per page.
+  const startIndex = (currentPage - 1) * 4;
+  const pagePresets = allPresets.slice(startIndex, startIndex + 4);
 
   // Active preset IDs
   const activePresetMap = new Map<string, number>();
@@ -152,13 +152,7 @@ export const ListView: React.FC<ListViewProps> = ({
     }
   };
 
-  const slots = Array.from({ length: 8 }, (_, i) => {
-    const preset = pagePresets[i] || null;
-    return {
-      index: i + 1,
-      preset,
-    };
-  });
+  const slots = pagePresets.map((preset, i) => ({ index: i + 1, preset }));
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-mono overflow-hidden">
@@ -175,7 +169,7 @@ export const ListView: React.FC<ListViewProps> = ({
       </div>
 
       {/* Main 8 Preset Slots Grid - Exactly matched with BankView (MAIN) layout */}
-      <div className="grid grid-cols-2 grid-rows-4 gap-1 flex-1 min-h-0 py-1 overflow-hidden">
+      <div className="grid grid-cols-2 grid-rows-2 gap-1 flex-1 min-h-0 py-1 overflow-hidden">
         {slots.map((slot) => {
           const preset = slot.preset;
           const isSlotActive = preset && activePresetMap.has(preset.id);
@@ -194,10 +188,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 className="relative flex items-center justify-between min-h-0 px-2 py-0.5 rounded-md border border-[#2b2f38] bg-[#1d1f27]/80 select-none shadow-sm overflow-hidden"
               >
                 <div className="flex items-center gap-2 truncate z-10 mr-1">
-                  <span className="w-5 h-5 rounded flex items-center justify-center font-bold text-xs shrink-0 border bg-[#13151b] text-zinc-500 border-[#2b2f3a]">
-                    {slot.index}
-                  </span>
-                  <div className="truncate">
+<div className="truncate">
                     <span className="font-mono text-xs font-bold tracking-wide text-zinc-500">
                       [KOSONG]
                     </span>
@@ -242,26 +233,8 @@ export const ListView: React.FC<ListViewProps> = ({
 
               {/* Slot Index, 4-Digit Code & Preset Name */}
               <div className="flex items-center gap-2 truncate mr-1 z-10">
-                <span
-                  className={`w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center font-bold text-xs shrink-0 border ${
-                    isSlotActive
-                      ? 'bg-black text-amber-400 border-black'
-                      : 'bg-[#1b1c24] text-[#86e2a2] border-[#313542]'
-                  }`}
-                >
-                  {isSlotActive ? `L${layerNumber}` : slot.index}
-                </span>
-
-                <div className="truncate flex flex-col">
-                  {/* Subtle 4-digit code in top left */}
-                  <span
-                    className={`text-[8px] font-mono tracking-tighter leading-none ${
-                      isSlotActive ? 'text-zinc-600' : 'text-[#709884]'
-                    }`}
-                  >
-                    {presetCode}
-                  </span>
-                  {/* Preset Name */}
+<div className="truncate flex flex-col">
+{/* Preset Name */}
                   <span
                     className={`font-sans text-[10px] sm:text-xs font-semibold tracking-normal truncate ${
                       isSlotActive ? 'text-black font-extrabold' : 'text-zinc-100'
