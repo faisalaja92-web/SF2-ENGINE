@@ -32,6 +32,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 }) => {
   const [meterL, setMeterL] = useState(0);
   const [meterR, setMeterR] = useState(0);
+  const meterEnvelope = useRef({ left: 0, right: 0 });
   const [isFullscreen, setIsFullscreen] = useState(false);
   const pageScrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -39,8 +40,14 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
     let animId: number;
     const updateMeters = () => {
       const levels = audioEngine.getMeterLevels();
-      setMeterL(levels.left);
-      setMeterR(levels.right);
+      const smooth = (current: number, target: number) => target >= current
+        ? current + (target - current) * 0.72
+        : Math.max(0, current - Math.max(0.10, current * 0.012));
+      const left = smooth(meterEnvelope.current.left, levels.left);
+      const right = smooth(meterEnvelope.current.right, levels.right);
+      meterEnvelope.current = { left, right };
+      setMeterL(Math.round(left));
+      setMeterR(Math.round(right));
       animId = requestAnimationFrame(updateMeters);
     };
     animId = requestAnimationFrame(updateMeters);
@@ -78,7 +85,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   return (
     <div className="w-screen h-[100dvh] bg-[#0b1019] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1">
       {/* Outer Heavy Bezel (Juzisound dark brushed metal styling from Image 1 & 2) */}
-      <div className="flex-1 border border-[#303b4d] rounded-xl bg-[#121a27] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative">
+      <div className="flex-1 border border-[#303b4d] rounded-[7px] bg-[#121a27] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative lcd-pixel-screen">
         
         {/* TOP HARDWARE BAR (Modeled exactly after Image 1) */}
         <div className="h-9 min-h-9 bg-[#182235] border-b border-[#34415a] flex items-center justify-between gap-1 px-1.5 sm:px-2 relative z-10 shrink-0">
@@ -193,14 +200,14 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
         <div className="flex-1 flex overflow-hidden relative">
           
           {/* LEFT SIDE: Authentic Juzisound Dual Channel Full-Height Peak Meter */}
-          <div className="w-9 sm:w-11 bg-gradient-to-r from-[#080b10] via-[#151c28] to-[#0a0e15] border-r border-[#39465a] shadow-[inset_-3px_0_6px_rgba(0,0,0,0.65),2px_0_5px_rgba(0,0,0,0.35)] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
+          <div className="w-12 sm:w-14 bg-gradient-to-r from-[#080b10] via-[#151c28] to-[#0a0e15] border-r border-[#39465a] shadow-[inset_-3px_0_6px_rgba(0,0,0,0.65),2px_0_5px_rgba(0,0,0,0.35)] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
             {/* Top Peak Value Header */}
             <span className="text-[8px] font-mono font-black text-red-500 tracking-tighter">
               -10
             </span>
 
             {/* Segmented Dual LED Meter Bars (Green -> Yellow -> Red -> Striped Peak at top) */}
-            <div className="flex-1 flex justify-center items-end gap-1 my-1 w-full px-0.5">
+            <div className="flex-1 flex justify-center items-end gap-1.5 my-1 w-full px-1">
               {/* L Channel */}
               <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
                 {/* Diagonal warning stripes top zone (lights up when signal reaches peak) */}
@@ -212,11 +219,9 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   }`}
                 />
                 
-                {/* Dynamic LED Fill with full-height responsiveness reaching 100% */}
-                <div
-                  className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75 shadow-[0_0_8px_rgba(255,23,68,0.7)]"
-                  style={{ height: `${Math.min(100, meterL)}%` }}
-                />
+                {/* Idle LCD scale is always faintly visible; live signal is the bright moving column. */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
+                <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_8px_rgba(255,23,68,0.72)]" style={{ height: `${Math.min(100, meterL)}%` }} />
 
                 {/* Horizontal LED tick segmentation overlay */}
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />
@@ -233,11 +238,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   }`}
                 />
 
-                {/* Dynamic LED Fill */}
-                <div
-                  className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75 shadow-[0_0_8px_rgba(255,23,68,0.7)]"
-                  style={{ height: `${Math.min(100, meterR)}%` }}
-                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
+                <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_8px_rgba(255,23,68,0.72)]" style={{ height: `${Math.min(100, meterR)}%` }} />
 
                 {/* Horizontal LED tick segmentation overlay */}
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />

@@ -110,10 +110,21 @@ export const MixerView: React.FC<MixerViewProps> = ({
 }) => {
   const [selectedLayerId, setSelectedLayerId] = useState<number>(1);
   const [layerMeters, setLayerMeters] = useState<Record<number, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
+  const layerMeterEnvelope = useRef<Record<number, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
   useEffect(() => {
     let frame = 0;
     const refresh = () => {
-      setLayerMeters({ 1: audioEngine.getLayerMeterLevel(1), 2: audioEngine.getLayerMeterLevel(2), 3: audioEngine.getLayerMeterLevel(3), 4: audioEngine.getLayerMeterLevel(4) });
+      const next: Record<number, number> = {};
+      for (const id of [1, 2, 3, 4]) {
+        const target = audioEngine.getLayerMeterLevel(id);
+        const current = layerMeterEnvelope.current[id] || 0;
+        const value = target >= current
+          ? current + (target - current) * 0.72
+          : Math.max(0, current - Math.max(0.10, current * 0.012));
+        layerMeterEnvelope.current[id] = value;
+        next[id] = Math.round(value);
+      }
+      setLayerMeters(next);
       frame = requestAnimationFrame(refresh);
     };
     frame = requestAnimationFrame(refresh);
@@ -425,11 +436,9 @@ export const MixerView: React.FC<MixerViewProps> = ({
                     </div>
 
                     {/* Side LED Peak Meter */}
-                    <div className="w-1 h-8 bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
-                      <div
-                        className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75"
-                        style={{ height: `${layerMeters[layer.id] || 0}%` }}
-                      />
+                    <div className="w-2 h-9 bg-[#090b10] rounded-[2px] border border-[#34404e] relative overflow-hidden flex flex-col justify-end shadow-[inset_0_1px_3px_rgba(0,0,0,0.9)]">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
+                      <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_6px_rgba(34,255,120,0.55)]" style={{ height: `${layerMeters[layer.id] || 0}%` }} />
                       <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-60 pointer-events-none" />
                     </div>
                   </div>
@@ -464,11 +473,9 @@ export const MixerView: React.FC<MixerViewProps> = ({
                 <div className="flex-1 flex flex-col justify-between py-0.5 min-h-0">
                   {/* Fader Track & Side LED */}
                   <div className="flex-1 flex items-center justify-center gap-1.5 relative overflow-hidden my-0.5">
-                    <div className="w-1.5 h-full bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
-                      <div
-                        className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75"
-                        style={{ height: `${layerMeters[layer.id] || 0}%` }}
-                      />
+                    <div className="w-2 h-full bg-[#090b10] rounded-[2px] border border-[#34404e] relative overflow-hidden flex flex-col justify-end shadow-[inset_0_1px_3px_rgba(0,0,0,0.9)]">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
+                      <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_6px_rgba(34,255,120,0.55)]" style={{ height: `${layerMeters[layer.id] || 0}%` }} />
                       <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-60 pointer-events-none" />
                     </div>
 

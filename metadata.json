@@ -1,8 +1,0 @@
-{
-  "name": "Remix Remix SF2 Workstation Pro - SoundFont \u0026 Oriental Synth",
-  "description": "Professional SoundFont2 (SF2) player, 4-layer synthesizer, Arabic microtonal scale tuning, 48kHz 32-bit float audio engine, MP3 backing player, and live MIDI controller.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
