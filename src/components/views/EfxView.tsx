@@ -48,11 +48,38 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
         </div>
       </div>
 
+      {/* Terca harmony: compact, touch-friendly performance controls */}
+      <section className="shrink-0 grid grid-cols-12 gap-2 my-1 rounded-lg border border-[#34415a] bg-[#101a2b] px-2.5 py-2">
+        <div className="col-span-12 sm:col-span-3 flex items-center gap-2">
+          <span className="text-sm font-black tracking-wide text-amber-300">TERCA</span>
+          <span className="text-[9px] text-slate-400">HARMONY</span>
+          <button
+            onClick={() => onUpdateEfx({ tercaEnabled: !efx.tercaEnabled })}
+            aria-pressed={!!efx.tercaEnabled}
+            className={`ml-auto sm:ml-0 min-w-[64px] min-h-[34px] rounded-md border px-3 text-[11px] font-black tracking-wide transition-colors ${efx.tercaEnabled ? 'bg-amber-400 text-black border-amber-200' : 'bg-slate-800 text-slate-300 border-slate-600'}`}
+          >{efx.tercaEnabled ? 'ON' : 'OFF'}</button>
+        </div>
+        <div className="col-span-6 sm:col-span-4 flex items-center gap-2">
+          <label htmlFor="terca-interval" className="text-[10px] font-bold text-slate-400 whitespace-nowrap">INTERVAL</label>
+          <select id="terca-interval" value={efx.tercaInterval || 'minor3'} onChange={(e) => onUpdateEfx({ tercaInterval: e.target.value as EfxSettings['tercaInterval'] })} className="min-h-[34px] flex-1 rounded-md border border-slate-600 bg-[#1b2638] px-2 text-[11px] font-bold text-white">
+            <option value="minor3">Minor 3rd (+3)</option>
+            <option value="major3">Major 3rd (+4)</option>
+            <option value="perfect5">Perfect 5th (+7)</option>
+            <option value="octave">Octave (+12)</option>
+          </select>
+        </div>
+        <div className="col-span-6 sm:col-span-5 flex items-center gap-2">
+          <label htmlFor="terca-volume" className="text-[10px] font-bold text-slate-400 whitespace-nowrap">LEVEL</label>
+          <input id="terca-volume" aria-label="Terca volume" type="range" min="0" max="1" step="0.05" value={efx.tercaVolume ?? 0.65} onChange={(e) => onUpdateEfx({ tercaVolume: parseFloat(e.target.value) })} className="min-w-0 flex-1 accent-amber-400" />
+          <span className="w-9 text-right text-[10px] font-bold text-amber-300">{Math.round((efx.tercaVolume ?? 0.65) * 100)}%</span>
+        </div>
+      </section>
+
       {/* Main Grid: 2 Panels styled after Image 2 CRT Screen & Rotary Knobs */}
-      <div className="grid grid-cols-12 gap-2 flex-1 py-1 overflow-hidden">
+      <div className="grid grid-cols-12 gap-2 flex-1 min-h-0 py-1 overflow-y-auto sm:overflow-hidden">
         
         {/* Left Panel: Legato & Acoustic Modeling (6 Cols) */}
-        <div className="col-span-6 bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-12 sm:col-span-6 min-h-[210px] bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
           {/* Panel Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
@@ -215,7 +242,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
         </div>
 
         {/* Right Panel: Reverb & Delay Console (6 Cols) */}
-        <div className="col-span-6 bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-12 sm:col-span-6 min-h-[210px] bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
           {/* Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
