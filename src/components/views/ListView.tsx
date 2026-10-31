@@ -161,11 +161,11 @@ export const ListView: React.FC<ListViewProps> = ({
   });
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-1.5 sm:p-2 bg-[#14161c] text-zinc-100 font-mono overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-mono overflow-hidden">
       {/* Top Banner (Identical to BankView / MAIN) */}
       <div className="flex items-center justify-between pb-1 border-b border-[#2b2f3a] text-xs shrink-0 px-0.5">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-wider">
+          <span className="text-zinc-400 font-bold text-[9px] sm:text-[10px] tracking-wide">
             HALAMAN {currentPage} · {allPresets.length} SOUNDFONT
           </span>
         </div>
@@ -175,7 +175,7 @@ export const ListView: React.FC<ListViewProps> = ({
       </div>
 
       {/* Main 8 Preset Slots Grid - Exactly matched with BankView (MAIN) layout */}
-      <div className="grid grid-cols-2 gap-1.5 flex-1 py-1 overflow-hidden">
+      <div className="grid grid-cols-2 grid-rows-4 gap-1 flex-1 min-h-0 py-1 overflow-hidden">
         {slots.map((slot) => {
           const preset = slot.preset;
           const isSlotActive = preset && activePresetMap.has(preset.id);
@@ -191,10 +191,10 @@ export const ListView: React.FC<ListViewProps> = ({
             return (
               <div
                 key={slot.index}
-                className="relative flex items-center justify-between px-2.5 py-1 sm:py-1.5 rounded-lg border-2 border-[#2b2f38] bg-[#1d1f27]/80 select-none shadow-sm overflow-hidden"
+                className="relative flex items-center justify-between min-h-0 px-2 py-0.5 rounded-md border border-[#2b2f38] bg-[#1d1f27]/80 select-none shadow-sm overflow-hidden"
               >
                 <div className="flex items-center gap-2 truncate z-10 mr-1">
-                  <span className="w-5 h-5 sm:w-6 sm:h-6 rounded flex items-center justify-center font-bold text-xs shrink-0 border bg-[#13151b] text-zinc-500 border-[#2b2f3a]">
+                  <span className="w-5 h-5 rounded flex items-center justify-center font-bold text-xs shrink-0 border bg-[#13151b] text-zinc-500 border-[#2b2f3a]">
                     {slot.index}
                   </span>
                   <div className="truncate">
@@ -263,7 +263,7 @@ export const ListView: React.FC<ListViewProps> = ({
                   </span>
                   {/* Preset Name */}
                   <span
-                    className={`font-sans text-xs sm:text-sm font-bold tracking-wide truncate ${
+                    className={`font-sans text-[10px] sm:text-xs font-semibold tracking-normal truncate ${
                       isSlotActive ? 'text-black font-extrabold' : 'text-zinc-100'
                     }`}
                   >
@@ -308,7 +308,7 @@ export const ListView: React.FC<ListViewProps> = ({
             onPointerLeave={handleSplitPointerCancel}
             onPointerCancel={handleSplitPointerCancel}
             onContextMenu={(e) => e.preventDefault()}
-            className={`relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded border transition-all active:scale-95 shadow select-none ${
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 rounded border transition-all active:scale-95 shadow select-none ${
               splitSettings?.enabled
                 ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-yellow-200 font-black shadow-[0_0_10px_#f59e0b]'
                 : 'bg-[#181a22] text-zinc-300 border-[#2b3140] hover:border-zinc-400'
@@ -357,7 +357,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 onOctaveChange?.(-1);
               }
             }}
-            className="w-7 sm:w-8 h-6 rounded bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] hover:from-[#3a3f50] hover:to-[#222530] active:scale-95 text-zinc-100 border border-[#3d4455] font-black text-xs sm:text-sm flex items-center justify-center shadow transition-all select-none"
+            className="w-6 h-6 rounded bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] hover:from-[#3a3f50] hover:to-[#222530] active:scale-95 text-zinc-100 border border-[#3d4455] font-black text-xs sm:text-sm flex items-center justify-center shadow transition-all select-none"
             title={isTransposeActive ? 'Turunkan 1 Semitone (-1st)' : 'Turunkan 1 Oktaf (-12 Semitone)'}
           >
             -
@@ -372,7 +372,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 onOctaveReset?.();
               }
             }}
-            className={`min-w-12 sm:min-w-14 h-6 px-1.5 rounded font-mono font-black text-[10px] sm:text-xs flex items-center justify-center border transition-all select-none ${
+            className={`min-w-11 h-6 px-1.5 rounded font-mono font-black text-[10px] sm:text-xs flex items-center justify-center border transition-all select-none ${
               (isTransposeActive ? masterTranspose !== 0 : masterOctave !== 0)
                 ? 'bg-gradient-to-b from-amber-400 to-yellow-500 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]'
                 : 'bg-[#15171f] text-zinc-200 border-[#2b303c]'
