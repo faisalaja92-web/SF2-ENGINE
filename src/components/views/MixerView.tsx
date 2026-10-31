@@ -162,7 +162,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
   const mainEqFillPath = `${mainEqCurvePath} L 200 50 L 0 50 Z`;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-1 sm:p-1.5 bg-[#14161c] text-zinc-200 font-sans select-none overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-200 font-sans select-none overflow-hidden">
       
       {/* 1. TOP HEADER BAR: TITLE, ACTIVE COUNT, STYLE TOGGLE & EQ DRAWER BUTTON */}
       <div className="flex items-center justify-between pb-1 px-1 border-b border-[#292e3c] text-xs shrink-0">
@@ -377,7 +377,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
       )}
 
       {/* 3. MAIN 4-LAYER CONSOLE SLOTS (L1 - L4) - ELEVATED TO FULL VIEWPORT SO NEVER CUT OFF IN MOBILE LANDSCAPE */}
-      <div className="flex-1 grid grid-cols-4 gap-1 sm:gap-1.5 min-h-0 pt-0.5 sm:pt-1">
+      <div className="flex-1 grid grid-cols-4 gap-1 min-h-0 pt-0.5">
         {layers.map((layer) => {
           const isSelected = selectedLayerId === layer.id;
           const isEnabled = layer.enabled;
@@ -390,7 +390,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
             <div
               key={layer.id}
               onClick={() => setSelectedLayerId(layer.id)}
-              className={`relative flex flex-col justify-between p-1 sm:p-1.5 rounded-lg border transition-all overflow-hidden ${
+              className={`relative flex flex-col justify-between p-1 rounded-md border transition-all overflow-hidden min-h-0 ${
                 isSelected
                   ? 'bg-gradient-to-b from-[#2b271b] via-[#201e16] to-[#161510] border-2 border-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.4)]'
                   : isEnabled && !isMuted
@@ -427,18 +427,18 @@ export const MixerView: React.FC<MixerViewProps> = ({
                         max={1}
                         step={0.01}
                         onChange={(newVol) => onUpdateLayer(layer.id, { volume: newVol })}
-                        size={34}
+                        size={26}
                         unit=""
                         color="#facc15"
                         title={`Layer ${layer.id} Volume: Seret atas/bawah (${displayValue} / 127)`}
                       />
-                      <span className="text-[7px] sm:text-[8px] font-mono font-black text-amber-400 mt-0.5">
+                      <span className="text-[7px] font-mono font-black text-amber-400 mt-0.5">
                         {Math.round(vol * 100)}%
                       </span>
                     </div>
 
                     {/* Side LED Peak Meter */}
-                    <div className="w-1.5 h-10 sm:h-12 bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
+                    <div className="w-1 h-8 bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
                       <div
                         className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75"
                         style={{ height: !isEnabled || isMuted ? '0%' : `${Math.round(vol * 90)}%` }}
