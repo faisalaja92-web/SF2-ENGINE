@@ -104,8 +104,8 @@ export default function App() {
   const [activeNotes, setActiveNotes] = useState<Set<number>>(new Set());
   const [midiActive, setMidiActive] = useState<boolean>(false);
   const [customTracks, setCustomTracks] = useState<Mp3Track[]>([]);
-  const [masterOctave, setMasterOctave] = useState<number>(0); // -3 to +3 octaves
-  const [masterTranspose, setMasterTranspose] = useState<number>(0); // -12 to +12 semitones
+  const [masterOctave, setMasterOctave] = useState<number>(currentBank.masterOctave ?? 0); // -3 to +3 octaves
+  const [masterTranspose, setMasterTranspose] = useState<number>(currentBank.masterTranspose ?? 0); // -12 to +12 semitones
   const [isTransposeActive, setIsTransposeActive] = useState<boolean>(false);
 
   // Keyboard Split Settings (Arranger Keyboard Style)
