@@ -42,6 +42,7 @@ export const ListView: React.FC<ListViewProps> = ({
   const [holdingPresetId, setHoldingPresetId] = useState<string | null>(null);
   const [holdProgress, setHoldProgress] = useState<number>(0);
   const [feedback, setFeedback] = useState<{ presetId: string; message: string } | null>(null);
+  const [activeOctaveAction, setActiveOctaveAction] = useState<'minus' | 'plus' | null>(null);
 
   const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
   const progressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -322,13 +323,14 @@ export const ListView: React.FC<ListViewProps> = ({
           {/* Minus Button */}
           <button
             onClick={() => {
+              setActiveOctaveAction('minus');
               if (isTransposeActive) {
                 onTransposeChange?.(-1);
               } else {
                 onOctaveChange?.(-1);
               }
             }}
-            className="w-6 h-6 rounded bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] hover:from-[#3a3f50] hover:to-[#222530] active:scale-95 text-zinc-100 border border-[#3d4455] font-black text-xs sm:text-sm flex items-center justify-center shadow transition-all select-none"
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'minus' ? 'bg-amber-400 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]' : 'bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] text-zinc-100 border-[#3d4455]'}`}
             title={isTransposeActive ? 'Turunkan 1 Semitone (-1st)' : 'Turunkan 1 Oktaf (-12 Semitone)'}
           >
             -
@@ -342,12 +344,9 @@ export const ListView: React.FC<ListViewProps> = ({
               } else {
                 onOctaveReset?.();
               }
+              setActiveOctaveAction(null);
             }}
-            className={`min-w-11 h-6 px-1.5 rounded font-mono font-black text-[10px] sm:text-xs flex items-center justify-center border transition-all select-none ${
-              (isTransposeActive ? masterTranspose !== 0 : masterOctave !== 0)
-                ? 'bg-gradient-to-b from-amber-400 to-yellow-500 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]'
-                : 'bg-[#15171f] text-zinc-200 border-[#2b303c]'
-            }`}
+            className="min-w-12 h-9 px-1.5 rounded font-mono font-bold text-[10px] sm:text-xs flex items-center justify-center border border-[#2b303c] bg-[#15171f] text-zinc-200 select-none"
             title={
               isTransposeActive
                 ? `Transpose: ${masterTranspose > 0 ? `+${masterTranspose}` : masterTranspose}st. Klik untuk reset`
@@ -362,13 +361,14 @@ export const ListView: React.FC<ListViewProps> = ({
           {/* Plus Button */}
           <button
             onClick={() => {
+              setActiveOctaveAction('plus');
               if (isTransposeActive) {
                 onTransposeChange?.(1);
               } else {
                 onOctaveChange?.(1);
               }
             }}
-            className="w-7 sm:w-8 h-6 rounded bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] hover:from-[#3a3f50] hover:to-[#222530] active:scale-95 text-zinc-100 border border-[#3d4455] font-black text-xs sm:text-sm flex items-center justify-center shadow transition-all select-none"
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'plus' ? 'bg-amber-400 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]' : 'bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] text-zinc-100 border-[#3d4455]'}`}
             title={isTransposeActive ? 'Naikkan 1 Semitone (+1st)' : 'Naikkan 1 Oktaf (+12 Semitone)'}
           >
             +
