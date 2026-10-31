@@ -58,6 +58,23 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = Math.max(1, Math.ceil(allPresets.length / 8));
 
+  // Load the bundled GeneralUser GS bank offline from the APK assets.
+  useEffect(() => {
+    let mounted = true;
+    audioEngine.loadBundledSoundFont('/assets/GeneralUser-GS.sf2').then((sf) => {
+      if (!mounted) return;
+      const featuredPrograms = new Set([0, 4, 5, 24, 25, 32, 40, 48, 56, 57, 60, 65, 66, 67, 71, 73]);
+      const featured = audioEngine.customPresets.filter((preset) => {
+        const source = sf.presets[preset.presetIndex ?? -1];
+        return preset.category === sf.name && preset.bank === 0 && !!source && featuredPrograms.has(source.preset);
+      });
+      if (featured.length > 0) setAllPresets(featured);
+    }).catch((error) => {
+      console.warn('Built-in SoundFont unavailable; using fallback instrument:', error);
+    });
+    return () => { mounted = false; };
+  }, []);
+
   // Default view is LIST
   const [currentView, setCurrentView] = useState<ViewMenu>('LIST');
   const [isPianoVisible, setIsPianoVisible] = useState<boolean>(false);
