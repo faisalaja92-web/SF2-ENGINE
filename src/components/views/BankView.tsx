@@ -65,7 +65,7 @@ export const BankView: React.FC<BankViewProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-2 sm:p-2.5 bg-[#14161c] text-zinc-100 font-mono overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-mono overflow-hidden">
       {/* Top Banner */}
       <div className="flex items-center justify-between pb-1.5 border-b border-[#2b2f3a] text-xs shrink-0">
         <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export const BankView: React.FC<BankViewProps> = ({
       </div>
 
       {/* Main 8 Bank Buttons Grid (2 columns x 4 rows) */}
-      <div className="grid grid-cols-2 gap-2 flex-1 py-1.5 overflow-hidden">
+      <div className="grid grid-cols-2 grid-rows-4 gap-1 flex-1 min-h-0 py-1 overflow-hidden">
         {banks.map((bank) => {
           const isSelected = activeBankId === bank.id;
           const isHolding = holdingBankId === bank.id;
@@ -94,7 +94,7 @@ export const BankView: React.FC<BankViewProps> = ({
               onPointerUp={() => cancelHold(bank.id, true)}
               onPointerLeave={() => cancelHold(bank.id, false)}
               onContextMenu={(e) => e.preventDefault()}
-              className={`relative flex items-center justify-between px-3 py-1.5 sm:py-2 rounded-lg border-2 cursor-pointer select-none transition-all overflow-hidden ${
+              className={`relative flex items-center justify-between min-h-0 px-2 py-1 rounded-md border cursor-pointer select-none transition-all overflow-hidden ${
                 isJustSaved
                   ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-white font-black shadow-[0_0_20px_#f59e0b]'
                   : isSelected
@@ -115,7 +115,7 @@ export const BankView: React.FC<BankViewProps> = ({
               {/* Bank Number & Title */}
               <div className="flex items-center gap-2.5 truncate z-10 mr-1">
                 <span
-                  className={`w-6 h-6 rounded flex items-center justify-center font-bold text-xs shrink-0 border ${
+                  className={`w-5 h-5 rounded flex items-center justify-center font-bold text-xs shrink-0 border ${
                     isSelected
                       ? 'bg-black text-amber-400 border-black'
                       : 'bg-[#1b1c24] text-[#86e2a2] border-[#313542]'
@@ -126,7 +126,7 @@ export const BankView: React.FC<BankViewProps> = ({
 
                 <div className="truncate">
                   <div
-                    className={`font-mono text-xs sm:text-sm font-bold tracking-wide truncate ${
+                    className={`font-mono text-[10px] sm:text-xs font-semibold tracking-normal truncate ${
                       isJustSaved
                         ? 'text-black font-black'
                         : isSelected
