@@ -109,6 +109,16 @@ export const MixerView: React.FC<MixerViewProps> = ({
   isPianoVisible = false,
 }) => {
   const [selectedLayerId, setSelectedLayerId] = useState<number>(1);
+  const [layerMeters, setLayerMeters] = useState<Record<number, number>>({ 1: 0, 2: 0, 3: 0, 4: 0 });
+  useEffect(() => {
+    let frame = 0;
+    const refresh = () => {
+      setLayerMeters({ 1: audioEngine.getLayerMeterLevel(1), 2: audioEngine.getLayerMeterLevel(2), 3: audioEngine.getLayerMeterLevel(3), 4: audioEngine.getLayerMeterLevel(4) });
+      frame = requestAnimationFrame(refresh);
+    };
+    frame = requestAnimationFrame(refresh);
+    return () => cancelAnimationFrame(frame);
+  }, []);
   const [activeTab, setActiveTab] = useState<'EQ' | 'EFX'>('EQ');
   const [showEqPanel, setShowEqPanel] = useState<boolean>(false);
   const [faderStyle, setFaderStyle] = useState<'rotary' | 'slider'>('rotary');
@@ -489,7 +499,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
                     <div className="w-1.5 h-full bg-[#090b10] rounded-[1px] border border-[#1a1f2c] relative overflow-hidden flex flex-col justify-end">
                       <div
                         className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75"
-                        style={{ height: !isEnabled || isMuted ? '0%' : `${Math.round(vol * 90)}%` }}
+                        style={{ height: `${layerMeters[layer.id] || 0}%` }}
                       />
                       <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-60 pointer-events-none" />
                     </div>
