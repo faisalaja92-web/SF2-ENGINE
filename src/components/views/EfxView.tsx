@@ -11,9 +11,9 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
   const acoustic = efx.acousticEngine;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-1.5 sm:p-2 bg-[#171920] text-zinc-100 font-sans select-none overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-sans select-none overflow-hidden">
       {/* Top Header Row (Juzisound style with quick switches) */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#2b303d] text-xs shrink-0 px-1">
+      <div className="flex items-center justify-between pb-1 border-b border-[#2b303d] text-[10px] shrink-0 px-1">
         <div className="flex items-center gap-1.5">
           <Activity size={14} className="text-amber-400" />
           <span className="font-mono font-bold text-xs tracking-wider text-zinc-200">
@@ -49,19 +49,19 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
       </div>
 
       {/* Terca harmony: compact, touch-friendly performance controls */}
-      <section className="shrink-0 grid grid-cols-12 gap-2 my-1 rounded-lg border border-[#34415a] bg-[#101a2b] px-2.5 py-2">
+      <section className="shrink-0 grid grid-cols-12 gap-1 my-0.5 rounded-md border border-[#34415a] bg-[#101a2b] px-1.5 py-1">
         <div className="col-span-12 sm:col-span-3 flex items-center gap-2">
           <span className="text-sm font-black tracking-wide text-amber-300">TERCA</span>
           <span className="text-[9px] text-slate-400">HARMONY</span>
           <button
             onClick={() => onUpdateEfx({ tercaEnabled: !efx.tercaEnabled })}
             aria-pressed={!!efx.tercaEnabled}
-            className={`ml-auto sm:ml-0 min-w-[64px] min-h-[34px] rounded-md border px-3 text-[11px] font-black tracking-wide transition-colors ${efx.tercaEnabled ? 'bg-amber-400 text-black border-amber-200' : 'bg-slate-800 text-slate-300 border-slate-600'}`}
+            className={`ml-auto sm:ml-0 min-w-[48px] min-h-[26px] rounded border px-2 text-[10px] font-black tracking-wide transition-colors ${efx.tercaEnabled ? 'bg-amber-400 text-black border-amber-200' : 'bg-slate-800 text-slate-300 border-slate-600'}`}
           >{efx.tercaEnabled ? 'ON' : 'OFF'}</button>
         </div>
         <div className="col-span-6 sm:col-span-4 flex items-center gap-2">
           <label htmlFor="terca-interval" className="text-[10px] font-bold text-slate-400 whitespace-nowrap">INTERVAL</label>
-          <select id="terca-interval" value={efx.tercaInterval || 'minor3'} onChange={(e) => onUpdateEfx({ tercaInterval: e.target.value as EfxSettings['tercaInterval'] })} className="min-h-[34px] flex-1 rounded-md border border-slate-600 bg-[#1b2638] px-2 text-[11px] font-bold text-white">
+          <select id="terca-interval" value={efx.tercaInterval || 'minor3'} onChange={(e) => onUpdateEfx({ tercaInterval: e.target.value as EfxSettings['tercaInterval'] })} className="min-h-[26px] flex-1 rounded border border-slate-600 bg-[#1b2638] px-2 text-[11px] font-bold text-white">
             <option value="minor3">Minor 3rd (+3)</option>
             <option value="major3">Major 3rd (+4)</option>
             <option value="perfect5">Perfect 5th (+7)</option>
@@ -76,10 +76,10 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
       </section>
 
       {/* Main Grid: 2 Panels styled after Image 2 CRT Screen & Rotary Knobs */}
-      <div className="grid grid-cols-12 gap-2 flex-1 min-h-0 py-1 overflow-y-auto sm:overflow-hidden">
+      <div className="grid grid-cols-2 gap-1 flex-1 min-h-0 py-0.5 overflow-y-auto sm:overflow-hidden">
         
         {/* Left Panel: Legato & Acoustic Modeling (6 Cols) */}
-        <div className="col-span-12 sm:col-span-6 min-h-[210px] bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-1 min-h-0 bg-[#101318] border border-[#262c38] rounded-md p-1.5 flex flex-col justify-between overflow-hidden shadow-inner">
           {/* Panel Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
@@ -100,7 +100,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           </div>
 
           {/* Blue CRT Graphic Curve Preview (Dynamically shaped by Speed, Attack, and Release) */}
-          <div className="h-16 sm:h-20 bg-[#081232] rounded border border-[#16275c] p-1.5 flex flex-col justify-between my-1 relative overflow-hidden shadow-inner">
+          <div className="h-12 sm:h-14 bg-[#081232] rounded border border-[#16275c] p-1.5 flex flex-col justify-between my-1 relative overflow-hidden shadow-inner">
             <div className="flex justify-between text-[8px] font-mono text-[#5b7fc4] z-10">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
@@ -187,7 +187,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           </div>
 
           {/* Rotary Knobs & Sliders */}
-          <div className="space-y-1.5 text-xs font-mono">
+          <div className="space-y-1 text-[10px] font-mono">
             {/* Speed */}
             <div className="flex items-center justify-between gap-2">
               <span className="text-[10px] text-zinc-400">SPEED:</span>
@@ -279,10 +279,10 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           </div>
 
           {/* 4 Rotary / Fader Knobs for FX Space */}
-          <div className="grid grid-cols-2 gap-2 my-1">
+          <div className="grid grid-cols-2 gap-1 my-0.5">
             {/* Reverb Mix */}
-            <div className="bg-[#0b0e14] p-1.5 rounded border border-[#1d222e]">
-              <div className="flex justify-between text-[9px] font-mono text-zinc-400 mb-1">
+            <div className="bg-[#0b0e14] p-1 rounded border border-[#1d222e]">
+              <div className="flex justify-between text-[8px] font-mono text-zinc-400 mb-0.5">
                 <span>REVERB WET</span>
                 <span className="text-amber-400 font-bold">{Math.round((efx.reverbWet || 0.2) * 100)}%</span>
               </div>
@@ -293,7 +293,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
                 step="0.02"
                 value={efx.reverbWet || 0.2}
                 onChange={(e) => onUpdateEfx({ reverbWet: parseFloat(e.target.value) })}
-                className="w-full accent-amber-400 h-1.5 bg-zinc-900 rounded"
+                className="w-full accent-amber-400 h-1 bg-zinc-900 rounded"
               />
             </div>
 
@@ -350,7 +350,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           </div>
 
           {/* Bottom Acoustic Resonance Indicator */}
-          <div className="flex items-center justify-between text-[9px] font-mono bg-[#0c1017] px-2 py-1 rounded border border-[#1e2330]">
+          <div className="flex items-center justify-between text-[8px] font-mono bg-[#0c1017] px-1.5 py-0.5 rounded border border-[#1e2330]">
             <span className="text-zinc-400">ACOUSTIC BODY RESONANCE:</span>
             <span className="text-amber-400 font-bold">
               {acoustic?.enabled ? 'ACTIVE (WOODWIND/STRINGS)' : 'OFFLINE'}
