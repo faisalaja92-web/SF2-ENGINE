@@ -21,7 +21,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] font-mono">
+        <div className="flex items-center gap-1 text-[9px] font-mono">
           {/* Mono / Poly Switch */}
           <button
             onClick={() => onUpdateEfx({ mono: !efx.mono })}
@@ -76,15 +76,15 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
       </section>
 
       {/* Main Grid: 2 Panels styled after Image 2 CRT Screen & Rotary Knobs */}
-      <div className="grid grid-cols-2 gap-1 flex-1 min-h-0 py-0.5 overflow-y-auto sm:overflow-hidden">
+      <div className="grid grid-cols-2 gap-2 flex-1 min-h-0 py-0.5 overflow-y-auto sm:overflow-hidden">
         
         {/* Left Panel: Legato & Acoustic Modeling (6 Cols) */}
-        <div className="col-span-1 min-h-0 bg-[#101318] border border-[#262c38] rounded-md p-1.5 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-1 min-w-0 min-h-0 bg-[#101318] border border-[#262c38] rounded-md p-1.5 flex flex-col justify-between overflow-y-auto shadow-inner">
           {/* Panel Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
               <Wind size={13} className="text-amber-400" />
-              <span className="text-xs font-bold text-zinc-200 font-mono">LEGATO &amp; GLIDE ENGINE</span>
+              <span className="text-[10px] sm:text-xs font-bold text-zinc-200 font-mono">LEGATO &amp; GLIDE ENGINE</span>
             </div>
             
             <button
@@ -242,12 +242,12 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
         </div>
 
         {/* Right Panel: Reverb & Delay Console (6 Cols) */}
-        <div className="col-span-12 sm:col-span-6 min-h-[210px] bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-1 min-w-0 min-h-0 bg-[#101318] border border-[#262c38] rounded-md p-1.5 flex flex-col justify-between overflow-y-auto shadow-inner">
           {/* Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
               <Radio size={13} className="text-amber-400" />
-              <span className="text-xs font-bold text-zinc-200 font-mono">STUDIO REVERB &amp; DELAY</span>
+              <span className="text-[10px] sm:text-xs font-bold text-zinc-200 font-mono">STUDIO REVERB &amp; DELAY</span>
             </div>
 
             <div className="flex items-center gap-1">
