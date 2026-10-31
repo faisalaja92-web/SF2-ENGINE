@@ -76,12 +76,12 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   const pageNumbers = Array.from({ length: Math.max(1, totalPages) }, (_, i) => i + 1);
 
   return (
-    <div className="w-screen h-[100dvh] bg-[#0b1019] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1">
+    <div className="w-screen h-[100dvh] bg-[#080f0b] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1">
       {/* Outer Heavy Bezel (Juzisound dark brushed metal styling from Image 1 & 2) */}
-      <div className="flex-1 border border-[#303b4d] rounded-[7px] bg-[#121a27] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative lcd-pixel-screen">
+      <div className="flex-1 border border-[#303b4d] rounded-[7px] bg-[#101b16] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative lcd-pixel-screen">
         
         {/* TOP HARDWARE BAR (Modeled exactly after Image 1) */}
-        <div className="h-9 min-h-9 bg-[#182235] border-b border-[#34415a] flex items-center justify-between gap-1 px-1.5 sm:px-2 relative z-10 shrink-0">
+        <div className="h-9 min-h-9 bg-[#17251b] border-b border-[#3b5540] flex items-center justify-between gap-1 px-1.5 sm:px-2 relative z-10 shrink-0">
           
           {/* Left: Branding & Hardware Status Box */}
           <div className="flex items-center gap-1 shrink-0 min-w-0">
@@ -134,8 +134,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                     onClick={() => onSelectPage(num)}
                     className={`w-6 sm:w-7 h-6 sm:h-7 rounded text-[10px] sm:text-xs font-mono font-extrabold flex items-center justify-center shrink-0 transition-all ${
                       isCurrent
-                        ? 'bg-gradient-to-b from-yellow-300 to-amber-400 text-black border border-yellow-200 shadow-[0_0_10px_rgba(250,204,21,0.7)] font-black scale-105'
-                        : 'bg-[#1a388b] text-white border border-[#2b4fae] hover:bg-[#2246a8]'
+                        ? 'bg-[#8eae5b] text-[#101a10] border border-[#c4dfa0] font-black'
+                        : 'bg-[#203c2a] text-[#d4e2d0] border border-[#456447] hover:bg-[#2c4c32]'
                     }`}
                     title={`Halaman Sound ${num}`}
                   >
@@ -186,7 +186,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
         <div className="flex-1 flex overflow-hidden relative">
           
           {/* LEFT SIDE: Authentic Juzisound Dual Channel Full-Height Peak Meter */}
-          <div className="w-12 sm:w-14 bg-gradient-to-r from-[#080b10] via-[#151c28] to-[#0a0e15] border-r border-[#39465a] shadow-[inset_-3px_0_6px_rgba(0,0,0,0.65),2px_0_5px_rgba(0,0,0,0.35)] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
+          <div className="w-12 sm:w-14 bg-gradient-to-r from-[#080d0a] via-[#18241a] to-[#0a100c] border-r border-[#405b43] shadow-[inset_-3px_0_6px_rgba(0,0,0,0.65),2px_0_5px_rgba(0,0,0,0.35)] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
             {/* Top Peak Value Header */}
             <span className="text-[8px] font-mono font-black text-red-500 tracking-tighter">
               -10
@@ -195,20 +195,20 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
             {/* Segmented Dual LED Meter Bars (Green -> Yellow -> Red -> Striped Peak at top) */}
             <div className="flex-1 flex justify-center items-end gap-1.5 my-1 w-full px-1">
               {/* L Channel */}
-              <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#05080a]">
-                  {Array.from({ length: 24 }, (_, i) => {
+              <div className="flex-1 h-full bg-[#080d09] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
+                <div className="absolute inset-0 flex flex-col-reverse gap-[1px] p-[2px] bg-[#071009]">
+                  {Array.from({ length: 32 }, (_, i) => {
                     const lit = meterL >= ((i + 1) / 24) * 100;
                     const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
                     const idle = i >= 20 ? '#351416' : i >= 15 ? '#393216' : '#10301e';
-                    return <div key={i} className="w-full flex-1 min-h-[2px]" style={{ backgroundColor: lit ? color : idle }} />;
+                    return <div key={i} className="w-full flex-1 min-h-[1px]" style={{ backgroundColor: lit ? color : idle }} />;
                   })}
                 </div>
               </div>
 
               {/* R Channel */}
-              <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#05080a]">
+              <div className="flex-1 h-full bg-[#080d09] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
+                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#071009]">
                   {Array.from({ length: 24 }, (_, i) => {
                     const lit = meterR >= ((i + 1) / 24) * 100;
                     const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
@@ -228,7 +228,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 
           {/* CENTER VIEWPORT (Dark gunmetal tone, smooth scrolling when KEY is open) */}
           <div
-            className={`flex-1 min-w-0 min-h-0 bg-[#121a27] flex flex-col relative transition-all ${
+            className={`flex-1 min-w-0 min-h-0 bg-[#101b16] flex flex-col relative transition-all ${
               isPianoVisible
                 ? 'overflow-y-auto pb-28 sm:pb-32 scroll-smooth'
                 : 'overflow-hidden'
@@ -238,7 +238,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-[52px] sm:w-[58px] bg-gradient-to-b from-[#202d42] via-[#151f30] to-[#0c1421] border-l border-[#45536a] shadow-[inset_2px_0_5px_rgba(255,255,255,0.04),-3px_0_8px_rgba(0,0,0,0.35)] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
+          <div className="w-[60px] sm:w-[68px] bg-gradient-to-b from-[#1c3021] via-[#142419] to-[#0b150e] border-l border-[#49634b] shadow-[inset_2px_0_5px_rgba(255,255,255,0.035),-3px_0_8px_rgba(0,0,0,0.35)] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
@@ -247,8 +247,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   onClick={() => onSelectView(item.id)}
                   className={`relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-[5px] font-mono text-[8px] sm:text-[9px] tracking-tight transition-all border-t border-l ${
                     isActive
-                      ? 'bg-gradient-to-b from-[#ffe28a] via-[#d9a83f] to-[#9b6b1d] text-[#17120a] font-black border-[#fff0bd] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-3px_4px_rgba(70,40,0,0.4),0_3px_5px_rgba(0,0,0,0.55)] translate-y-[1px]'
-                      : 'bg-gradient-to-b from-[#354762] via-[#23334b] to-[#131e2e] text-[#c5d2e4] border-[#4b607d] shadow-[inset_0_1px_1px_rgba(255,255,255,0.16),inset_0_-2px_3px_rgba(0,0,0,0.55),0_2px_3px_rgba(0,0,0,0.5)] hover:from-[#405572] hover:text-white font-bold active:translate-y-[2px] active:shadow-inner'
+                      ? 'bg-gradient-to-b from-[#a8c879] via-[#668f4c] to-[#355b35] text-[#101a10] font-black border-[#c4dfa0] shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-2px_3px_rgba(0,0,0,0.45),0_2px_3px_rgba(0,0,0,0.5)] translate-y-[1px]'
+                      : 'bg-gradient-to-b from-[#304b35] via-[#203a27] to-[#14251a] text-[#d1dfca] border-[#4d6a4e] shadow-[inset_0_1px_1px_rgba(255,255,255,0.10),inset_0_-2px_3px_rgba(0,0,0,0.55),0_2px_3px_rgba(0,0,0,0.5)] hover:from-[#3b5b40] hover:text-white font-bold active:translate-y-[2px] active:shadow-inner'
                   }`}
                 >
                   {/* Yellow dash LED on Scala like in Image 1 */}
