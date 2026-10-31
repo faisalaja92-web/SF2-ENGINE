@@ -82,19 +82,19 @@ const DraggableKnob: React.FC<DraggableKnobProps> = ({
       onPointerCancel={handlePointerUp}
       onWheel={handleWheel}
       onDoubleClick={() => onChange(min + (max - min) * 0.85)}
-      className="relative rounded-full bg-gradient-to-b from-[#343a49] via-[#222632] to-[#141720] border border-zinc-500 flex items-center justify-center cursor-ns-resize shadow-md hover:border-yellow-400 active:border-amber-300 touch-none select-none shrink-0"
+      className="relative rounded-full bg-[radial-gradient(circle_at_32%_24%,#758196_0%,#465165_23%,#252e3e_54%,#111925_79%,#080d15_100%)] border-2 border-[#69778d] flex items-center justify-center cursor-ns-resize shadow-[inset_0_2px_3px_rgba(255,255,255,0.3),inset_0_-5px_7px_rgba(0,0,0,0.9),0_3px_7px_rgba(0,0,0,0.85)] hover:border-yellow-400 active:border-amber-300 touch-none select-none shrink-0"
       style={{ width: size, height: size }}
       title={title || `Tahan & seret ke atas/bawah untuk atur (${min} s/d ${max} ${unit})`}
     >
       <div
-        className="w-0.5 h-3.5 rounded-full absolute top-1 shadow-[0_0_4px_#facc15] pointer-events-none"
+        className="w-1 h-3.5 rounded-full absolute top-1 shadow-[0_0_5px_#facc15,0_1px_1px_rgba(0,0,0,0.8)] pointer-events-none border border-[#fff2b0]/60"
         style={{
           backgroundColor: color,
           transform: `rotate(${angle}deg)`,
           transformOrigin: 'bottom center',
         }}
       />
-      <div className="w-2.5 h-2.5 rounded-full bg-[#151720] border border-zinc-600 pointer-events-none" />
+      <div className="w-3 h-3 rounded-full bg-[radial-gradient(circle_at_35%_30%,#687386,#222936_58%,#080c13)] border border-[#667184] shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),0_1px_2px_#000] pointer-events-none" />
     </div>
   );
 };
@@ -121,7 +121,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
   }, []);
   const [activeTab, setActiveTab] = useState<'EQ' | 'EFX'>('EQ');
   const [showEqPanel, setShowEqPanel] = useState<boolean>(false);
-  const [faderStyle, setFaderStyle] = useState<'rotary' | 'slider'>('rotary');
+  const faderStyle = 'rotary' as const;
 
   const currentLayer = layers.find((l) => l.id === selectedLayerId) || layers[0];
 
@@ -188,30 +188,6 @@ export const MixerView: React.FC<MixerViewProps> = ({
         </div>
 
         <div className="flex items-center gap-1 sm:gap-1.5">
-          {/* Fader Style Selector */}
-          <div className="flex items-center gap-0.5 bg-[#0f1116] p-0.5 rounded border border-[#2b303d]">
-            <button
-              onClick={() => setFaderStyle('rotary')}
-              className={`px-1.5 py-0.5 rounded text-[8px] font-mono font-bold transition-all ${
-                faderStyle === 'rotary'
-                  ? 'bg-amber-400 text-black font-black shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              PUTAR
-            </button>
-            <button
-              onClick={() => setFaderStyle('slider')}
-              className={`px-1.5 py-0.5 rounded text-[8px] font-mono font-bold transition-all ${
-                faderStyle === 'slider'
-                  ? 'bg-amber-400 text-black font-black shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              SLIDER
-            </button>
-          </div>
-
           {/* Toggle Parametric EQ & EFX Drawer */}
           <button
             onClick={() => setShowEqPanel(!showEqPanel)}
@@ -401,7 +377,7 @@ export const MixerView: React.FC<MixerViewProps> = ({
             <div
               key={layer.id}
               onClick={() => setSelectedLayerId(layer.id)}
-              className={`relative flex flex-col justify-between p-1 rounded-md border transition-all overflow-hidden min-h-0 ${
+              className={`relative flex flex-col justify-between p-1 rounded-[5px] border transition-all overflow-hidden min-h-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_3px_6px_rgba(0,0,0,0.45)] ${
                 isSelected
                   ? 'bg-gradient-to-b from-[#2b271b] via-[#201e16] to-[#161510] border-2 border-yellow-400 shadow-[0_0_12px_rgba(250,204,21,0.4)]'
                   : isEnabled && !isMuted
@@ -474,20 +450,12 @@ export const MixerView: React.FC<MixerViewProps> = ({
                       </button>
                     </div>
 
-                    <div className="w-full flex items-center gap-1">
-                      <span className="text-[7px] font-mono font-bold text-sky-400 shrink-0">L</span>
-                      <input
-                        type="range"
-                        min="-1"
-                        max="1"
-                        step="0.05"
-                        value={pan}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => onUpdateLayer(layer.id, { pan: parseFloat(e.target.value) })}
-                        className="flex-1 accent-sky-400 h-1 sm:h-1.5 bg-[#08090d] rounded cursor-pointer"
-                        title="Geser kiri / kanan untuk stereo pan"
-                      />
-                      <span className="text-[7px] font-mono font-bold text-sky-400 shrink-0">R</span>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-[7px] font-mono font-black text-sky-400">L</span>
+                      <DraggableKnob value={pan} min={-1} max={1} step={0.05}
+                        onChange={(newPan) => onUpdateLayer(layer.id, { pan: newPan })}
+                        size={22} unit="" color="#38bdf8" title="Putar untuk stereo pan kiri / kanan" />
+                      <span className="text-[7px] font-mono font-black text-sky-400">R</span>
                     </div>
                   </div>
                 </div>
@@ -544,20 +512,12 @@ export const MixerView: React.FC<MixerViewProps> = ({
                       </button>
                     </div>
 
-                    <div className="w-full flex items-center gap-1">
-                      <span className="text-[7px] font-mono font-bold text-sky-400 shrink-0">L</span>
-                      <input
-                        type="range"
-                        min="-1"
-                        max="1"
-                        step="0.05"
-                        value={pan}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => onUpdateLayer(layer.id, { pan: parseFloat(e.target.value) })}
-                        className="flex-1 accent-sky-400 h-1 sm:h-1.5 bg-[#08090d] rounded cursor-pointer"
-                        title="Geser kiri / kanan untuk stereo pan"
-                      />
-                      <span className="text-[7px] font-mono font-bold text-sky-400 shrink-0">R</span>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="text-[7px] font-mono font-black text-sky-400">L</span>
+                      <DraggableKnob value={pan} min={-1} max={1} step={0.05}
+                        onChange={(newPan) => onUpdateLayer(layer.id, { pan: newPan })}
+                        size={22} unit="" color="#38bdf8" title="Putar untuk stereo pan kiri / kanan" />
+                      <span className="text-[7px] font-mono font-black text-sky-400">R</span>
                     </div>
                   </div>
                 </div>
@@ -578,14 +538,19 @@ export const MixerView: React.FC<MixerViewProps> = ({
                       onUpdateLayer(layer.id, { mute: !layer.mute });
                     }
                   }}
-                  className={`w-4 h-4 sm:w-5 sm:h-5 rounded border flex items-center justify-center transition-all ${
+                  className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-[5px] border flex items-center justify-center transition-all duration-150 active:translate-y-[1px] ${
                     isEnabled && !isMuted
-                      ? 'bg-gradient-to-b from-amber-500 to-amber-700 border-yellow-300 text-black shadow-[0_0_8px_#f59e0b]'
-                      : 'bg-zinc-800 text-zinc-600 border-zinc-700'
+                      ? 'bg-gradient-to-b from-[#59677a] to-[#1a2432] border-[#91a3b9] shadow-[inset_0_1px_2px_rgba(255,255,255,0.38),inset_0_-2px_3px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.7)]'
+                      : 'bg-gradient-to-b from-[#394252] to-[#111722] border-[#566174] shadow-[inset_0_1px_2px_rgba(255,255,255,0.16),inset_0_-2px_3px_rgba(0,0,0,0.8),0_2px_4px_rgba(0,0,0,0.7)]'
                   }`}
-                  title={`Layer ${layer.id} Power / Mute (${isEnabled && !isMuted ? 'ON' : 'MUTED'})`}
+                  title={`Layer ${layer.id} illuminated push button (${isEnabled && !isMuted ? 'ON' : 'OFF'})`}
                 >
-                  <Power size={9} className={isEnabled && !isMuted ? 'text-black stroke-[3]' : 'text-zinc-500'} />
+                  <span className={`absolute inset-[4px] rounded-full border transition-all ${
+                    isEnabled && !isMuted
+                      ? 'bg-[radial-gradient(circle_at_35%_30%,#fff5bf_0%,#ffd34f_35%,#d88916_75%,#78410a_100%)] border-[#fff0a6] shadow-[0_0_5px_#ffc43d,0_0_10px_rgba(255,180,30,0.8),inset_0_1px_2px_rgba(255,255,255,0.85)]'
+                      : 'bg-[radial-gradient(circle_at_35%_30%,#596272_0%,#303947_45%,#121923_100%)] border-[#6a7483] shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),inset_0_-2px_2px_rgba(0,0,0,0.8)]'
+                  }`} />
+                  <Power size={8} className={`relative z-10 ${isEnabled && !isMuted ? 'text-[#241806] stroke-[3]' : 'text-[#aab3c0]'}`} />
                 </button>
               </div>
             </div>

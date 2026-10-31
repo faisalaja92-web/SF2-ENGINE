@@ -193,7 +193,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
         <div className="flex-1 flex overflow-hidden relative">
           
           {/* LEFT SIDE: Authentic Juzisound Dual Channel Full-Height Peak Meter */}
-          <div className="w-3.5 bg-[#0d0e12] border-r border-[#262a33] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
+          <div className="w-9 sm:w-11 bg-gradient-to-r from-[#080b10] via-[#151c28] to-[#0a0e15] border-r border-[#39465a] shadow-[inset_-3px_0_6px_rgba(0,0,0,0.65),2px_0_5px_rgba(0,0,0,0.35)] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
             {/* Top Peak Value Header */}
             <span className="text-[8px] font-mono font-black text-red-500 tracking-tighter">
               -10
@@ -263,17 +263,17 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-[48px] sm:w-[52px] bg-[#111a29] border-l border-[#34415a] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
+          <div className="w-[52px] sm:w-[58px] bg-gradient-to-b from-[#202d42] via-[#151f30] to-[#0c1421] border-l border-[#45536a] shadow-[inset_2px_0_5px_rgba(255,255,255,0.04),-3px_0_8px_rgba(0,0,0,0.35)] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => onSelectView(item.id)}
-                  className={`relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-md font-mono text-[8px] sm:text-[9px] tracking-tight transition-all ${
+                  className={`relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-[5px] font-mono text-[8px] sm:text-[9px] tracking-tight transition-all border-t border-l ${
                     isActive
-                      ? 'bg-amber-400 text-[#111827] font-black border border-amber-200 shadow-[0_3px_12px_rgba(245,158,11,0.22)]'
-                      : 'bg-[#202d42] text-[#c5d2e4] border border-[#3a4b65] hover:bg-[#293a55] hover:text-white font-bold active:scale-95'
+                      ? 'bg-gradient-to-b from-[#ffe28a] via-[#d9a83f] to-[#9b6b1d] text-[#17120a] font-black border-[#fff0bd] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-3px_4px_rgba(70,40,0,0.4),0_3px_5px_rgba(0,0,0,0.55)] translate-y-[1px]'
+                      : 'bg-gradient-to-b from-[#354762] via-[#23334b] to-[#131e2e] text-[#c5d2e4] border-[#4b607d] shadow-[inset_0_1px_1px_rgba(255,255,255,0.16),inset_0_-2px_3px_rgba(0,0,0,0.55),0_2px_3px_rgba(0,0,0,0.5)] hover:from-[#405572] hover:text-white font-bold active:translate-y-[2px] active:shadow-inner'
                   }`}
                 >
                   {/* Yellow dash LED on Scala like in Image 1 */}

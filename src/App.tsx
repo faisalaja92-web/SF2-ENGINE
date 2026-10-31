@@ -63,7 +63,7 @@ export default function App() {
     let mounted = true;
     audioEngine.loadBundledSoundFont('/assets/GeneralUser-GS.sf2').then((sf) => {
       if (!mounted) return;
-      const featuredPrograms = new Set([0, 4, 5, 24, 25, 32, 40, 48, 56, 57, 60, 65, 66, 67, 71, 73]);
+      const featuredPrograms = new Set([40, 48, 65, 71]);
       const featured = audioEngine.customPresets.filter((preset) => {
         const source = sf.presets[preset.presetIndex ?? -1];
         return preset.category === sf.name && preset.bank === 0 && !!source && featuredPrograms.has(source.preset);
