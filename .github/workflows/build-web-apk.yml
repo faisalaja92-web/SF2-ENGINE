@@ -2,7 +2,7 @@ name: Build SF2 ENGINE Android APK
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, ui-legato-refine]
   workflow_dispatch:
 
 permissions:
