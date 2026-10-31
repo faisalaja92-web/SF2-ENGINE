@@ -115,6 +115,9 @@ export function createEmptyLayers(): SoundLayer[] {
 }
 
 export const DEFAULT_EFX: EfxSettings = {
+  tercaEnabled: false,
+  tercaInterval: 'minor3',
+  tercaVolume: 0.65,
   portamento: false,
   glideTime: 0.06,
   legato: true,
