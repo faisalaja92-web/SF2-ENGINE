@@ -54,7 +54,7 @@ export class AudioEngine {
   private delayWetGain: GainNode | null = null;
 
   // Layer buses (Layer 1..4)
-  private layerBuses: Map<number, { gain: GainNode; panner: StereoPannerNode }> = new Map();
+  private layerBuses: Map<number, { gain: GainNode; panner: StereoPannerNode; analyser: AnalyserNode; meterData: Uint8Array<ArrayBuffer> }> = new Map();
 
   // Active voices tracking
   private activeVoices: Map<string, ActiveVoice> = new Map();
@@ -209,12 +209,17 @@ export class AudioEngine {
       const panner = ctx.createStereoPanner();
       panner.pan.setValueAtTime(0, ctx.currentTime);
 
-      gain.connect(panner);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.72;
+      const meterData = new Uint8Array(analyser.frequencyBinCount);
+      gain.connect(analyser);
+      analyser.connect(panner);
       panner.connect(this.eq80);
       panner.connect(this.reverbNode);
       panner.connect(this.delayNode);
 
-      this.layerBuses.set(layerId, { gain, panner });
+      this.layerBuses.set(layerId, { gain, panner, analyser, meterData });
     }
   }
 
@@ -824,6 +829,22 @@ export class AudioEngine {
       this.delayFeedbackGain.gain.setValueAtTime(efx.delayFeedback, now);
       this.delayNode.delayTime.setValueAtTime(efx.delayTime, now);
     }
+  }
+
+  public getLayerMeterLevel(layerId: number): number {
+    const bus = this.layerBuses.get(layerId);
+    if (!bus) return 0;
+    bus.analyser.getByteTimeDomainData(bus.meterData);
+    let peak = 0;
+    let sum = 0;
+    for (let i = 0; i < bus.meterData.length; i++) {
+      const sample = Math.abs((bus.meterData[i] - 128) / 128);
+      peak = Math.max(peak, sample);
+      sum += sample * sample;
+    }
+    const rms = Math.sqrt(sum / bus.meterData.length);
+    const level = Math.min(100, Math.round(Math.pow(peak * 0.7 + rms * 1.15, 0.72) * 125));
+    return level < 3 ? 0 : level;
   }
 
   public getMeterLevels(): { left: number; right: number } {
