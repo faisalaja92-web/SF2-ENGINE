@@ -459,11 +459,16 @@ export const MixerView: React.FC<MixerViewProps> = ({
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="w-full flex items-center justify-center gap-2 px-1">
                       <span className="text-[7px] font-mono font-black text-sky-400">L</span>
-                      <DraggableKnob value={pan} min={-1} max={1} step={0.05}
-                        onChange={(newPan) => onUpdateLayer(layer.id, { pan: newPan })}
-                        size={22} unit="" color="#38bdf8" title="Putar untuk stereo pan kiri / kanan" />
+                      <input
+                        type="range" min="-1" max="1" step="0.01" value={pan}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => onUpdateLayer(layer.id, { pan: Number(e.target.value) })}
+                        className="w-full max-w-[100px] h-2 cursor-pointer accent-sky-400"
+                        title="Geser kiri/kanan untuk stereo pan"
+                        aria-label={`Layer ${layer.id} stereo pan`}
+                      />
                       <span className="text-[7px] font-mono font-black text-sky-400">R</span>
                     </div>
                   </div>
@@ -519,11 +524,16 @@ export const MixerView: React.FC<MixerViewProps> = ({
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="w-full flex items-center justify-center gap-2 px-1">
                       <span className="text-[7px] font-mono font-black text-sky-400">L</span>
-                      <DraggableKnob value={pan} min={-1} max={1} step={0.05}
-                        onChange={(newPan) => onUpdateLayer(layer.id, { pan: newPan })}
-                        size={22} unit="" color="#38bdf8" title="Putar untuk stereo pan kiri / kanan" />
+                      <input
+                        type="range" min="-1" max="1" step="0.01" value={pan}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => onUpdateLayer(layer.id, { pan: Number(e.target.value) })}
+                        className="w-full max-w-[100px] h-2 cursor-pointer accent-sky-400"
+                        title="Geser kiri/kanan untuk stereo pan"
+                        aria-label={`Layer ${layer.id} stereo pan`}
+                      />
                       <span className="text-[7px] font-mono font-black text-sky-400">R</span>
                     </div>
                   </div>
