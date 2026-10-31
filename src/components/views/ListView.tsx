@@ -156,9 +156,9 @@ export const ListView: React.FC<ListViewProps> = ({
   const slots = Array.from({ length: 8 }, (_, i) => ({ index: i + 1, preset: pagePresets[i] || null }));
 
   return (
-    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#111a29] text-zinc-100 font-mono overflow-hidden">
+    <div className="w-full h-full min-h-0 flex flex-col gap-1 p-1 bg-[#101b18] text-zinc-100 font-mono overflow-hidden">
       {/* Top Banner (Identical to BankView / MAIN) */}
-      <div className="flex items-center justify-between pb-1 border-b border-[#2b2f3a] text-xs shrink-0 px-0.5">
+      <div className="flex items-center justify-between pb-1 border-b border-[#34483d] text-xs shrink-0 px-0.5">
         <div className="flex items-center gap-2">
           <span className="text-zinc-400 font-bold text-[9px] sm:text-[10px] tracking-wide">
             HALAMAN {currentPage} · {allPresets.length} SOUNDFONT
@@ -184,7 +184,7 @@ export const ListView: React.FC<ListViewProps> = ({
             return (
               <div
                 key={slot.index}
-                className="relative flex items-center justify-between min-h-0 px-2 py-0.5 rounded-md border border-[#2b2f38] bg-[#1d1f27]/80 select-none shadow-sm overflow-hidden"
+                className="relative flex items-center justify-between min-h-0 px-2 py-0.5 rounded-md border border-[#35473b] bg-[#17231d] select-none shadow-sm overflow-hidden"
               >
                 <div className="flex items-center gap-2 truncate z-10 mr-1">
 <div className="truncate">
@@ -216,8 +216,8 @@ export const ListView: React.FC<ListViewProps> = ({
                     ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-white font-extrabold shadow-[0_0_20px_#f59e0b]'
                     : 'bg-zinc-800 text-amber-300 border-amber-500 font-extrabold'
                   : isSlotActive
-                  ? 'bg-gradient-to-r from-white via-zinc-100 to-zinc-200 text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.7)] font-black'
-                  : 'bg-gradient-to-r from-[#2f2b38] to-[#3a3545] border-[#4b4356] text-zinc-100 hover:border-[#6f6380] hover:brightness-110 shadow-md'
+                  ? 'bg-[#426a43] text-white border-[#a0c58b] shadow-sm font-black'
+                  : 'bg-[#263b2d] border-[#4c654e] text-[#e0eadc] shadow-sm'
               }`}
             >
               {/* 1-Second Hold Progress Bar */}
@@ -270,7 +270,7 @@ export const ListView: React.FC<ListViewProps> = ({
       </div>
 
       {/* Bottom Hardware Control Bar: Split (Tap ON/OFF, Hold Setup), Transpose Button, [- 0 +] Semitone/Octave Bar, Engine Info */}
-      <div className="flex items-center justify-between pt-1 border-t border-[#252834] text-xs shrink-0 px-0.5 sm:px-1 gap-1">
+      <div className="flex items-center justify-between pt-1 border-t border-[#34483d] text-xs shrink-0 px-0.5 sm:px-1 gap-1 bg-[#101b18]">
         {/* Left Side: Split Button & Transpose Button side by side */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* Split Button: Tap to Toggle ON/OFF, Hold for Settings Modal */}
@@ -282,8 +282,8 @@ export const ListView: React.FC<ListViewProps> = ({
             onContextMenu={(e) => e.preventDefault()}
             className={`relative flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 rounded border transition-all active:scale-95 shadow select-none ${
               splitSettings?.enabled
-                ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-yellow-200 font-black shadow-[0_0_10px_#f59e0b]'
-                : 'bg-[#181a22] text-zinc-300 border-[#2b3140] hover:border-zinc-400'
+                ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black'
+                : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'
             }`}
             title="Sentuh untuk ON/OFF. Tahan lama untuk pengaturan Split"
           >
@@ -302,8 +302,8 @@ export const ListView: React.FC<ListViewProps> = ({
             onClick={onToggleTransposeActive}
             className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded border transition-all active:scale-95 shadow select-none ${
               isTransposeActive
-                ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-black border-yellow-200 font-black shadow-[0_0_10px_#f59e0b]'
-                : 'bg-[#181a22] text-zinc-300 border-[#2b3140] hover:border-zinc-400'
+                ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black'
+                : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'
             }`}
             title="Pengaktif Mode Transpose. Saat aktif, tombol [-][+] di samping mengatur Transpose Semitone"
           >
@@ -319,7 +319,7 @@ export const ListView: React.FC<ListViewProps> = ({
         </div>
 
         {/* Center: Dedicated [- 0 +] Bar (Transpose Semitone when TRNS active, or Master Octave when inactive) */}
-        <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0c0d12] p-0.5 rounded-md border border-[#2b303d] shadow-inner shrink-0">
+        <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0b130e] p-0.5 rounded-sm border border-[#3c5140] shadow-inner shrink-0">
           {/* Minus Button */}
           <button
             onClick={() => {
@@ -330,7 +330,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 onOctaveChange?.(-1);
               }
             }}
-            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'minus' ? 'bg-amber-400 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]' : 'bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] text-zinc-100 border-[#3d4455]'}`}
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'minus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}
             title={isTransposeActive ? 'Turunkan 1 Semitone (-1st)' : 'Turunkan 1 Oktaf (-12 Semitone)'}
           >
             -
@@ -346,7 +346,7 @@ export const ListView: React.FC<ListViewProps> = ({
               }
               setActiveOctaveAction(null);
             }}
-            className="min-w-12 h-9 px-1.5 rounded font-mono font-bold text-[10px] sm:text-xs flex items-center justify-center border border-[#2b303c] bg-[#15171f] text-zinc-200 select-none"
+            className="min-w-12 h-9 px-1.5 rounded font-mono font-bold text-[10px] sm:text-xs flex items-center justify-center border border-[#2b303c] bg-[#17251b] text-[#dce8d9] select-none"
             title={
               isTransposeActive
                 ? `Transpose: ${masterTranspose > 0 ? `+${masterTranspose}` : masterTranspose}st. Klik untuk reset`
@@ -368,7 +368,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 onOctaveChange?.(1);
               }
             }}
-            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'plus' ? 'bg-amber-400 text-black border-yellow-200 shadow-[0_0_10px_#f59e0b]' : 'bg-gradient-to-b from-[#2b2f3c] to-[#1a1c24] text-zinc-100 border-[#3d4455]'}`}
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'plus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}
             title={isTransposeActive ? 'Naikkan 1 Semitone (+1st)' : 'Naikkan 1 Oktaf (+12 Semitone)'}
           >
             +
