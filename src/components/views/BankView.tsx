@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { SoundBank, KeyboardSplitSettings } from '../../types/synth';
-import { Save, Check, Trash2, Split } from 'lucide-react';
+import { SoundBank } from '../../types/synth';
+import { Save, Check, Trash2 } from 'lucide-react';
 
 interface BankViewProps {
   banks: SoundBank[];
