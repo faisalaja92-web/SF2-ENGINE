@@ -177,8 +177,6 @@ export const ListView: React.FC<ListViewProps> = ({
           const isHolding = preset && holdingPresetId === preset.id;
           const activeFeedback = preset && feedback?.presetId === preset.id ? feedback.message : null;
 
-          // Four-digit preset ID format as seen in Image 1 (e.g. 0034, 1430, 0001)
-          const presetCode = preset ? String(startIndex + slot.index).padStart(4, '0') : `000${slot.index}`;
 
           // Empty slot displays exactly like BankView
           if (!preset) {
@@ -231,7 +229,7 @@ export const ListView: React.FC<ListViewProps> = ({
                 />
               )}
 
-              {/* Slot Index, 4-Digit Code & Preset Name */}
+              {/* Instrument name only */}
               <div className="flex items-center gap-2 truncate mr-1 z-10">
 <div className="truncate flex flex-col">
 {/* Preset Name */}
