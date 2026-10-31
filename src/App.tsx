@@ -539,6 +539,10 @@ export default function App() {
             onOctaveChange={handleOctaveChange}
             masterTranspose={masterTranspose}
             onTransposeChange={handleTransposeChange}
+            onOctaveReset={handleOctaveReset}
+            onTransposeReset={handleTransposeReset}
+            isTransposeActive={isTransposeActive}
+            onToggleTransposeActive={() => setIsTransposeActive((prev) => !prev)}
           />
         )}
 
