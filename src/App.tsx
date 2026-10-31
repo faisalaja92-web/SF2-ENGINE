@@ -47,7 +47,9 @@ export default function App() {
   const currentBank = banks.find((b) => b.id === activeBankId) || banks[0];
 
   const [layers, setLayers] = useState<SoundLayer[]>(currentBank.layers);
-  const [efx, setEfx] = useState<EfxSettings>(currentBank.efx);
+  const [efx, setEfx] = useState<EfxSettings>(() => currentBank.isEmpty
+    ? { ...currentBank.efx, tercaEnabled: false, reverbEnabled: false, delayEnabled: false, acousticEngine: { ...currentBank.efx.acousticEngine, enabled: false } }
+    : currentBank.efx);
   const [equalizer, setEqualizer] = useState<EqualizerSettings>(currentBank.equalizer);
   const [scaleTuning, setScaleTuning] = useState<ArabicScaleTuning>(currentBank.scale);
 
@@ -157,7 +159,9 @@ export default function App() {
 
     setActiveBankId(id);
     setLayers(target.layers);
-    setEfx(target.efx);
+    setEfx(target.isEmpty
+      ? { ...target.efx, tercaEnabled: false, reverbEnabled: false, delayEnabled: false, acousticEngine: { ...target.efx.acousticEngine, enabled: false } }
+      : target.efx);
     setEqualizer(target.equalizer);
     setScaleTuning(target.scale);
     if (target.split) {
