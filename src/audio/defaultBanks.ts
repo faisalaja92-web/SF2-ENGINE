@@ -120,7 +120,7 @@ export const DEFAULT_EFX: EfxSettings = {
   tercaVolume: 0.65,
   portamento: false,
   glideTime: 0.06,
-  legato: true,
+  legato: false,
   legatoSpeed: 0.05,
   legatoAttack: 0.008,
   legatoRelease: 0.22,
