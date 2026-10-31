@@ -24,7 +24,7 @@ export const BankView: React.FC<BankViewProps> = ({
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const holdStartTimeRef = useRef<number>(0);
 
-  const HOLD_DURATION_MS = 2500; // 2.5 seconds hold for deliberate saving
+  const HOLD_DURATION_MS = 700; // Short deliberate hold to save
 
   const startHold = (bankId: number) => {
     setHoldingBankId(bankId);
@@ -71,11 +71,11 @@ export const BankView: React.FC<BankViewProps> = ({
         <div className="flex items-center gap-2">
           <Save size={13} className="text-amber-400" />
           <span className="text-zinc-200 font-bold text-xs tracking-wider">
-            PRESET BANK (USER 1 - 8)
+            PRESET BANK
           </span>
         </div>
         <div className="text-[10px] text-zinc-400 font-bold bg-[#1d212b] px-2 py-0.5 rounded border border-[#2f3545]">
-          8 SLOTS
+          BANK
         </div>
       </div>
 
@@ -112,17 +112,8 @@ export const BankView: React.FC<BankViewProps> = ({
                 />
               )}
 
-              {/* Bank Number & Title */}
+              {/* Bank title without numeric slot labels */}
               <div className="flex items-center gap-2.5 truncate z-10 mr-1">
-                <span
-                  className={`w-5 h-5 rounded flex items-center justify-center font-bold text-xs shrink-0 border ${
-                    isSelected
-                      ? 'bg-black text-amber-400 border-black'
-                      : 'bg-[#1b1c24] text-[#86e2a2] border-[#313542]'
-                  }`}
-                >
-                  {bank.id}
-                </span>
 
                 <div className="truncate">
                   <div
@@ -138,7 +129,7 @@ export const BankView: React.FC<BankViewProps> = ({
                   >
                     {isJustSaved
                       ? 'SAVED'
-                      : `USER ${bank.id}`}
+                      : 'USER BANK'}
                   </div>
                 </div>
               </div>

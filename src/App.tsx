@@ -30,6 +30,24 @@ import { extractMp3CoverArt } from './utils/id3CoverExtractor';
 const STORAGE_KEY = 'sf2_workstation_banks_v3';
 
 export default function App() {
+  useEffect(() => {
+    const guardBackNavigation = () => {
+      window.history.pushState({ sf2EngineGuard: true }, '');
+      const handleBack = () => {
+        const shouldExit = window.confirm('Keluar dari Soundfont Engine?');
+        if (shouldExit) {
+          window.removeEventListener('popstate', handleBack);
+          window.history.back();
+        } else {
+          window.history.pushState({ sf2EngineGuard: true }, '');
+        }
+      };
+      window.addEventListener('popstate', handleBack);
+    };
+    guardBackNavigation();
+    return () => window.removeEventListener('popstate', () => {});
+  }, []);
+
   const [banks, setBanks] = useState<SoundBank[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);

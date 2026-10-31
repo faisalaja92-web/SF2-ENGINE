@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ViewMenu } from '../types/synth';
 import { audioEngine } from '../audio/audioEngine';
-import { Maximize2, Minimize2, Keyboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Keyboard, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface WorkstationFrameProps {
   currentView: ViewMenu;
@@ -33,7 +33,6 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   const [meterL, setMeterL] = useState(0);
   const [meterR, setMeterR] = useState(0);
   const meterEnvelope = useRef({ left: 0, right: 0 });
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const pageScrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,13 +53,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-    } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-    }
-  };
+
 
   const scrollPages = (direction: 'left' | 'right') => {
     if (pageScrollContainerRef.current) {
@@ -185,14 +178,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
               <span className="text-[10px] font-bold font-mono">KEY</span>
             </button>
 
-            {/* Fullscreen Button */}
-            <button
-              onClick={toggleFullscreen}
-              className="p-1 rounded bg-[#1e222a] text-zinc-300 border border-[#383d4a] hover:border-zinc-500 active:scale-95"
-              title="Fullscreen"
-            >
-              {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
-            </button>
+
           </div>
         </div>
 
@@ -210,39 +196,26 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
             <div className="flex-1 flex justify-center items-end gap-1.5 my-1 w-full px-1">
               {/* L Channel */}
               <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                {/* Diagonal warning stripes top zone (lights up when signal reaches peak) */}
-                <div
-                  className={`absolute top-0 inset-x-0 h-3 pointer-events-none z-10 transition-opacity duration-100 ${
-                    meterL > 88
-                      ? 'opacity-100 bg-[repeating-linear-gradient(45deg,#ff1744,#ff1744_2px,#000_2px,#000_4px)] shadow-[0_0_8px_#ff1744]'
-                      : 'opacity-35 bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_2px,#000_2px,#000_4px)]'
-                  }`}
-                />
-                
-                {/* Idle LCD scale is always faintly visible; live signal is the bright moving column. */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
-                <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_8px_rgba(255,23,68,0.72)]" style={{ height: `${Math.min(100, meterL)}%` }} />
-
-                {/* Horizontal LED tick segmentation overlay */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />
+                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#05080a]">
+                  {Array.from({ length: 24 }, (_, i) => {
+                    const lit = meterL >= ((i + 1) / 24) * 100;
+                    const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
+                    const idle = i >= 20 ? '#351416' : i >= 15 ? '#393216' : '#10301e';
+                    return <div key={i} className="w-full flex-1 min-h-[2px]" style={{ backgroundColor: lit ? color : idle }} />;
+                  })}
+                </div>
               </div>
 
               {/* R Channel */}
               <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                {/* Diagonal warning stripes top zone */}
-                <div
-                  className={`absolute top-0 inset-x-0 h-3 pointer-events-none z-10 transition-opacity duration-100 ${
-                    meterR > 88
-                      ? 'opacity-100 bg-[repeating-linear-gradient(45deg,#ff1744,#ff1744_2px,#000_2px,#000_4px)] shadow-[0_0_8px_#ff1744]'
-                      : 'opacity-35 bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_2px,#000_2px,#000_4px)]'
-                  }`}
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-[#00e676]/20 via-[#ffeb3b]/20 to-[#ff1744]/20" />
-                <div className="relative z-[1] w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-[height] duration-75 shadow-[0_0_8px_rgba(255,23,68,0.72)]" style={{ height: `${Math.min(100, meterR)}%` }} />
-
-                {/* Horizontal LED tick segmentation overlay */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />
+                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#05080a]">
+                  {Array.from({ length: 24 }, (_, i) => {
+                    const lit = meterR >= ((i + 1) / 24) * 100;
+                    const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
+                    const idle = i >= 20 ? '#351416' : i >= 15 ? '#393216' : '#10301e';
+                    return <div key={i} className="w-full flex-1 min-h-[2px]" style={{ backgroundColor: lit ? color : idle }} />;
+                  })}
+                </div>
               </div>
             </div>
 
