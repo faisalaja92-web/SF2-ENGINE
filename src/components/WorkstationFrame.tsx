@@ -76,12 +76,12 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   const pageNumbers = Array.from({ length: Math.max(1, totalPages) }, (_, i) => i + 1);
 
   return (
-    <div className="w-screen h-screen bg-[#141619] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1 sm:p-1.5">
+    <div className="w-screen h-screen bg-[#0b1019] text-zinc-100 font-sans flex flex-col select-none overflow-hidden p-1.5 sm:p-2">
       {/* Outer Heavy Bezel (Juzisound dark brushed metal styling from Image 1 & 2) */}
-      <div className="flex-1 border-2 sm:border-[3px] border-[#252830] rounded-lg sm:rounded-xl bg-[#181a20] shadow-[0_0_35px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden relative">
+      <div className="flex-1 border border-[#303b4d] rounded-xl bg-[#121a27] shadow-[0_12px_36px_rgba(0,0,0,0.45)] flex flex-col overflow-hidden relative">
         
         {/* TOP HARDWARE BAR (Modeled exactly after Image 1) */}
-        <div className="h-10 sm:h-11 bg-gradient-to-b from-[#22242a] via-[#1c1e24] to-[#16171d] border-b border-[#2d313b] flex items-center justify-between px-2 sm:px-2.5 relative z-10 shrink-0">
+        <div className="min-h-11 bg-[#182235] border-b border-[#34415a] flex items-center justify-between gap-2 px-2 sm:px-3 relative z-10 shrink-0">
           
           {/* Left: Branding & Hardware Status Box */}
           <div className="flex items-center gap-1.5 shrink-0">
@@ -263,7 +263,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-16 sm:w-20 md:w-24 bg-gradient-to-b from-[#181a20] via-[#14161b] to-[#101215] border-l border-[#262a33] flex flex-col justify-between p-1 sm:p-1.5 gap-1 select-none shrink-0 shadow-inner">
+          <div className="w-[60px] sm:w-[76px] md:w-[88px] bg-[#111a29] border-l border-[#34415a] flex flex-col justify-between p-1.5 sm:p-2 gap-1.5 select-none shrink-0">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
@@ -272,8 +272,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   onClick={() => onSelectView(item.id)}
                   className={`relative flex-1 flex flex-col items-center justify-center rounded-[4px] font-mono text-[10px] sm:text-xs tracking-wider transition-all shadow-md ${
                     isActive
-                      ? 'bg-gradient-to-b from-amber-300 via-amber-400 to-yellow-500 text-black font-black border border-yellow-200 shadow-[0_0_15px_rgba(245,158,11,0.7)] transform scale-[1.02]'
-                      : 'bg-gradient-to-b from-[#262a30] via-[#1d2026] to-[#16191f] text-[#b6c7be] border border-[#333842] hover:border-zinc-500 hover:text-white font-bold active:scale-98'
+                      ? 'bg-amber-400 text-[#111827] font-black border border-amber-200 shadow-[0_3px_12px_rgba(245,158,11,0.22)]'
+                      : 'bg-[#202d42] text-[#c5d2e4] border border-[#3a4b65] hover:bg-[#293a55] hover:text-white font-bold active:scale-95'
                   }`}
                 >
                   {/* Yellow dash LED on Scala like in Image 1 */}
