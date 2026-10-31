@@ -130,26 +130,116 @@ export const BankView: React.FC<BankViewProps> = ({
         })}
       </div>
 
-      <div className="flex items-center justify-between pt-1 border-t border-[#34483d] text-xs shrink-0 px-0.5 gap-1">
-        <div className="flex items-center gap-1 shrink-0">
-          <button onPointerDown={handleSplitPointerDown} onPointerUp={handleSplitPointerUp} onPointerLeave={handleSplitCancel} onPointerCancel={handleSplitCancel} onContextMenu={(e) => e.preventDefault()}
-            className={`flex items-center gap-1 px-1.5 py-1 rounded-sm border select-none ${splitSettings.enabled ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black' : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'}`}>
-            <span className={`w-2 h-2 rounded-full border border-black ${splitSettings.enabled ? 'bg-[#172b18]' : 'bg-[#9d3931]'}`} />
-            <span className="text-[9px] sm:text-[10px] font-bold">{isHoldingSplit ? 'SETUP...' : `SPLIT: ${splitSettings.enabled ? 'ON' : 'OFF'}`}</span>
+      {/* Bottom Hardware Control Bar: Split (Tap ON/OFF, Hold Setup), Transpose Button, [- 0 +] Semitone/Octave Bar, Engine Info */}
+      <div className="flex items-center justify-between pt-1 border-t border-[#34483d] text-xs shrink-0 px-0.5 sm:px-1 gap-1 bg-[#101b18]">
+        {/* Left Side: Split Button & Transpose Button side by side */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {/* Split Button: Tap to Toggle ON/OFF, Hold for Settings Modal */}
+          <button
+            onPointerDown={handleSplitPointerDown}
+            onPointerUp={handleSplitPointerUp}
+            onPointerLeave={handleSplitCancel}
+            onPointerCancel={handleSplitCancel}
+            onContextMenu={(e) => e.preventDefault()}
+            className={`relative flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 rounded border transition-all active:scale-95 shadow select-none ${
+              splitSettings?.enabled
+                ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black'
+                : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'
+            }`}
+            title="Sentuh untuk ON/OFF. Tahan lama untuk pengaturan Split"
+          >
+            <div
+              className={`w-2 h-2 rounded-full border border-black shrink-0 ${
+                splitSettings?.enabled ? 'bg-black animate-ping' : 'bg-red-500'
+              }`}
+            />
+            <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-tight">
+              {isHoldingSplit ? 'SETUP...' : `SPLIT: ${splitSettings?.enabled ? 'ON' : 'OFF'}`}
+            </span>
           </button>
-          <button onClick={onToggleTransposeActive} className={`flex items-center gap-1 px-1.5 py-1 rounded-sm border select-none ${isTransposeActive ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black' : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'}`}>
-            <span className={`w-2 h-2 rounded-full border border-black ${isTransposeActive ? 'bg-[#172b18]' : 'bg-[#59665a]'}`} />
-            <span className="text-[9px] sm:text-[10px] font-bold">TRNS: {isTransposeActive ? 'ON' : 'OFF'}</span>
+
+          {/* Transpose Activator Button (Sebelah Split): Pengaktif saja, proses transpose via tombol -+ */}
+          <button
+            onClick={onToggleTransposeActive}
+            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded border transition-all active:scale-95 shadow select-none ${
+              isTransposeActive
+                ? 'bg-[#789b4f] text-[#10180e] border-[#b4d28e] font-black'
+                : 'bg-[#1a2a20] text-[#c7d5c5] border-[#49634d]'
+            }`}
+            title="Pengaktif Mode Transpose. Saat aktif, tombol [-][+] di samping mengatur Transpose Semitone"
+          >
+            <div
+              className={`w-2 h-2 rounded-full border border-black shrink-0 ${
+                isTransposeActive ? 'bg-black animate-ping' : 'bg-zinc-600'
+              }`}
+            />
+            <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-tight">
+              TRNS: {isTransposeActive ? 'ON' : 'OFF'}
+            </span>
           </button>
         </div>
-        <div className="flex items-center gap-0.5 bg-[#0b130e] p-0.5 rounded-sm border border-[#3c5140] shrink-0">
-          <button onClick={() => { setActiveOctaveAction('minus'); isTransposeActive ? onTransposeChange(-1) : onOctaveChange(-1); }} className={`min-w-10 h-9 px-2 border font-black text-lg ${activeOctaveAction === 'minus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}>−</button>
-          <button onClick={() => { isTransposeActive ? onTransposeReset() : onOctaveReset(); setActiveOctaveAction(null); }} className="min-w-12 h-9 px-1 border border-[#3d5140] bg-[#17251b] text-[#dce8d9] font-bold text-[10px]">
-            {isTransposeActive ? `TR: ${masterTranspose > 0 ? '+' : ''}${masterTranspose}` : `OCT: ${masterOctave > 0 ? '+' : ''}${masterOctave}`}
+
+        {/* Center: Dedicated [- 0 +] Bar (Transpose Semitone when TRNS active, or Master Octave when inactive) */}
+        <div className="flex items-center gap-0.5 sm:gap-1 bg-[#0b130e] p-0.5 rounded-sm border border-[#3c5140] shadow-inner shrink-0">
+          {/* Minus Button */}
+          <button
+            onClick={() => {
+              setActiveOctaveAction('minus');
+              if (isTransposeActive) {
+                onTransposeChange?.(-1);
+              } else {
+                onOctaveChange?.(-1);
+              }
+            }}
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'minus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}
+            title={isTransposeActive ? 'Turunkan 1 Semitone (-1st)' : 'Turunkan 1 Oktaf (-12 Semitone)'}
+          >
+            -
           </button>
-          <button onClick={() => { setActiveOctaveAction('plus'); isTransposeActive ? onTransposeChange(1) : onOctaveChange(1); }} className={`min-w-10 h-9 px-2 border font-black text-lg ${activeOctaveAction === 'plus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}>+</button>
+
+          {/* Center Display: Shows Transpose or Octave value, tap to reset */}
+          <button
+            onClick={() => {
+              if (isTransposeActive) {
+                onTransposeReset?.();
+              } else {
+                onOctaveReset?.();
+              }
+              setActiveOctaveAction(null);
+            }}
+            className="min-w-12 h-9 px-1.5 rounded font-mono font-bold text-[10px] sm:text-xs flex items-center justify-center border border-[#2b303c] bg-[#17251b] text-[#dce8d9] select-none"
+            title={
+              isTransposeActive
+                ? `Transpose: ${masterTranspose > 0 ? `+${masterTranspose}` : masterTranspose}st. Klik untuk reset`
+                : `Oktaf: ${masterOctave > 0 ? `+${masterOctave}` : masterOctave}. Klik untuk reset`
+            }
+          >
+            {isTransposeActive
+              ? `TR: ${masterTranspose > 0 ? `+${masterTranspose}` : masterTranspose}`
+              : `OCT: ${masterOctave > 0 ? `+${masterOctave}` : masterOctave}`}
+          </button>
+
+          {/* Plus Button */}
+          <button
+            onClick={() => {
+              setActiveOctaveAction('plus');
+              if (isTransposeActive) {
+                onTransposeChange?.(1);
+              } else {
+                onOctaveChange?.(1);
+              }
+            }}
+            className={`min-w-11 h-10 px-3 rounded border font-black text-lg flex items-center justify-center shadow transition-all select-none active:scale-95 ${activeOctaveAction === 'plus' ? 'bg-[#a0c66f] text-[#132014] border-[#d0e6a9]' : 'bg-[#263b2d] text-[#e0eadc] border-[#526c53]'}`}
+            title={isTransposeActive ? 'Naikkan 1 Semitone (+1st)' : 'Naikkan 1 Oktaf (+12 Semitone)'}
+          >
+            +
+          </button>
         </div>
-        <div className="hidden sm:block text-[9px] font-bold text-[#a8c99b] bg-[#17251b] px-2 py-1 border border-[#34483d] shrink-0">4 LAYER ENGINE</div>
+
+        {/* Right: Layer Engine Badge */}
+        <div className="hidden sm:block text-[9px] font-mono text-[#86e2a2] bg-[#12161f] px-2 py-0.5 rounded border border-[#252f42] font-bold shrink-0">
+          4 LAYER ENGINE
+        </div>
       </div>
     </div>
   );

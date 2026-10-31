@@ -13,7 +13,8 @@
     touch-action: manipulation;
   }
   button, input, select { font: inherit; }
-  button { touch-action: manipulation; }
+  button { touch-action: manipulation; transition: filter 90ms ease, box-shadow 90ms ease; }
+  button:active { filter: brightness(1.3); box-shadow: 0 0 9px rgba(250, 204, 21, .72), inset 0 0 4px rgba(255, 230, 120, .3); border-color: #facc15; }
 }
 
 /* Compact instrument-panel controls, tuned for a 6.78-inch phone in landscape. */
@@ -37,11 +38,11 @@ input[type="range"]::-moz-range-thumb {
 /* Fine LCD pixel matrix and scanlines: visible up close, restrained at normal viewing distance. */
 .lcd-pixel-screen::after {
   content: ""; position: absolute; inset: 0; z-index: 40; pointer-events: none;
-  border-radius: inherit; opacity: .19; mix-blend-mode: multiply;
+  border-radius: inherit; opacity: .30; mix-blend-mode: multiply;
   background-image:
-    radial-gradient(circle, rgba(180,210,175,.28) .45px, transparent .8px),
-    repeating-linear-gradient(to bottom, rgba(8,18,10,.18) 0, rgba(8,18,10,.18) 1px, transparent 1px, transparent 2px);
-  background-size: 3px 3px, 100% 2px;
+    radial-gradient(circle, rgba(190,225,175,.42) .65px, transparent 1px),
+    repeating-linear-gradient(to bottom, rgba(5,14,7,.28) 0, rgba(5,14,7,.28) 1px, transparent 1px, transparent 2px);
+  background-size: 2px 2px, 100% 2px;
 }
 .lcd-pixel-screen::before {
   content: ""; position: absolute; inset: 0; z-index: 39; pointer-events: none;

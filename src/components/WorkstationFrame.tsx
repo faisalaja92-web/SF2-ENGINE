@@ -198,7 +198,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
               <div className="flex-1 h-full bg-[#080d09] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
                 <div className="absolute inset-0 flex flex-col-reverse gap-[1px] p-[2px] bg-[#071009]">
                   {Array.from({ length: 32 }, (_, i) => {
-                    const lit = meterL >= ((i + 1) / 24) * 100;
+                    const lit = meterL >= ((i + 1) / 32) * 100;
                     const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
                     const idle = i >= 20 ? '#351416' : i >= 15 ? '#393216' : '#10301e';
                     return <div key={i} className="w-full flex-1 min-h-[1px]" style={{ backgroundColor: lit ? color : idle }} />;
@@ -208,9 +208,9 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 
               {/* R Channel */}
               <div className="flex-1 h-full bg-[#080d09] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                <div className="absolute inset-0 flex flex-col-reverse gap-[2px] p-[3px] bg-[#071009]">
-                  {Array.from({ length: 24 }, (_, i) => {
-                    const lit = meterR >= ((i + 1) / 24) * 100;
+                <div className="absolute inset-0 flex flex-col-reverse gap-[1px] p-[2px] bg-[#071009]">
+                  {Array.from({ length: 32 }, (_, i) => {
+                    const lit = meterR >= ((i + 1) / 32) * 100;
                     const color = i >= 20 ? '#ff3434' : i >= 15 ? '#ffd52e' : '#21f078';
                     const idle = i >= 20 ? '#351416' : i >= 15 ? '#393216' : '#10301e';
                     return <div key={i} className="w-full flex-1 min-h-[2px]" style={{ backgroundColor: lit ? color : idle }} />;
@@ -238,7 +238,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-[60px] sm:w-[68px] bg-gradient-to-b from-[#1c3021] via-[#142419] to-[#0b150e] border-l border-[#49634b] shadow-[inset_2px_0_5px_rgba(255,255,255,0.035),-3px_0_8px_rgba(0,0,0,0.35)] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
+          <div className="w-[64px] sm:w-[72px] bg-gradient-to-b from-[#1c3021] via-[#142419] to-[#0b150e] border-l border-[#49634b] shadow-[inset_2px_0_5px_rgba(255,255,255,0.035),-3px_0_8px_rgba(0,0,0,0.35)] flex flex-col justify-between p-1 gap-1 select-none shrink-0">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
@@ -247,8 +247,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   onClick={() => onSelectView(item.id)}
                   className={`relative flex-1 min-h-0 flex flex-col items-center justify-center rounded-[5px] font-mono text-[8px] sm:text-[9px] tracking-tight transition-all border-t border-l ${
                     isActive
-                      ? 'bg-gradient-to-b from-[#a8c879] via-[#668f4c] to-[#355b35] text-[#101a10] font-black border-[#c4dfa0] shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-2px_3px_rgba(0,0,0,0.45),0_2px_3px_rgba(0,0,0,0.5)] translate-y-[1px]'
-                      : 'bg-gradient-to-b from-[#304b35] via-[#203a27] to-[#14251a] text-[#d1dfca] border-[#4d6a4e] shadow-[inset_0_1px_1px_rgba(255,255,255,0.10),inset_0_-2px_3px_rgba(0,0,0,0.55),0_2px_3px_rgba(0,0,0,0.5)] hover:from-[#3b5b40] hover:text-white font-bold active:translate-y-[2px] active:shadow-inner'
+                      ? 'bg-gradient-to-b from-[#fff2a6] via-[#f4c83e] to-[#b88716] text-[#17200e] font-black border-[#fff0a3] shadow-[inset_0_1px_1px_rgba(255,255,255,0.65),inset_0_-2px_3px_rgba(0,0,0,0.35),0_0_12px_rgba(250,204,21,0.85)] translate-y-[1px]'
+                      : 'bg-gradient-to-b from-[#304b35] via-[#203a27] to-[#14251a] text-[#d1dfca] border-[#4d6a4e] shadow-[inset_0_1px_1px_rgba(255,255,255,0.10),inset_0_-2px_3px_rgba(0,0,0,0.55),0_2px_3px_rgba(0,0,0,0.5)] hover:from-[#3b5b40] hover:text-white font-bold active:translate-y-[2px] active:from-[#fff2a6] active:via-[#f4c83e] active:to-[#b88716] active:text-[#17200e] active:border-[#fff0a3] active:shadow-[0_0_12px_rgba(250,204,21,0.85)]'
                   }`}
                 >
                   {/* Yellow dash LED on Scala like in Image 1 */}
