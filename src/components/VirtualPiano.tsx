@@ -34,6 +34,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
   const isPointerDownRef = useRef(false);
   const currentHoveredNoteRef = useRef<number | null>(null);
   const pitchBendPointerId = useRef<number | null>(null);
+  const modPointerId = useRef<number | null>(null);
   const keyboardContainerRef = useRef<HTMLDivElement>(null);
 
   const startMidi = (baseOctave - 1) * 12 + 12; // C4 = 60
@@ -89,18 +90,34 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
     };
   }, []);
 
+  const updateVerticalControl = (e: React.PointerEvent<HTMLDivElement>, callback: (value: number) => void, min: number, max: number) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+    callback(max - ratio * (max - min));
+  };
+
   const handlePitchBendPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     pitchBendPointerId.current = e.pointerId;
     e.currentTarget.setPointerCapture(e.pointerId);
+    updateVerticalControl(e, onPitchBendChange, -1, 1);
   };
 
   const handlePitchBendPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pitchBendPointerId.current === e.pointerId) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const relativeY = (e.clientY - rect.top) / rect.height;
-      const bend = Math.max(-1, Math.min(1, (0.5 - relativeY) * 2));
-      onPitchBendChange(bend);
+      updateVerticalControl(e, onPitchBendChange, -1, 1);
     }
+  };
+
+  const handleModPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    modPointerId.current = e.pointerId;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    updateVerticalControl(e, onModWheelChange, 0, 1);
+  };
+  const handleModPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (modPointerId.current === e.pointerId) updateVerticalControl(e, onModWheelChange, 0, 1);
+  };
+  const handleModPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (modPointerId.current === e.pointerId) modPointerId.current = null;
   };
 
   const handlePitchBendPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -179,17 +196,16 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
         {/* Modulation Wheel (CC1 Vibrato depth) */}
         <div className="flex flex-col items-center shrink-0">
           <span className="text-[8px] text-zinc-400 font-bold mb-0.5">MOD</span>
-          <div className="w-10 h-24 sm:h-28 bg-[#161820] border border-[#353a47] rounded relative flex items-center justify-center p-1 shadow-inner touch-none">
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.02"
-              value={modWheel}
-              onChange={(e) => onModWheelChange(parseFloat(e.target.value))}
-              className="w-24 sm:w-28 accent-amber-400 cursor-pointer h-3 bg-zinc-800 rounded -rotate-90 touch-none"
-              title="Modulation Wheel (CC1)"
-            />
+          <div
+            onPointerDown={handleModPointerDown}
+            onPointerMove={handleModPointerMove}
+            onPointerUp={handleModPointerUp}
+            onPointerCancel={handleModPointerUp}
+            className="w-10 h-24 sm:h-28 bg-[#161820] border border-[#353a47] rounded relative flex items-center justify-center p-1 shadow-inner touch-none cursor-ns-resize"
+            title="Modulation Wheel (CC1)"
+          >
+            <div className="absolute inset-x-1 top-1 bottom-1 rounded bg-zinc-900 pointer-events-none" />
+            <div className="absolute left-0 right-0 h-3 rounded bg-gradient-to-r from-amber-500 to-yellow-400 shadow-[0_0_8px_#f59e0b] pointer-events-none" style={{ top: `calc(4px + ${(1 - modWheel) * 78}%)` }} />
           </div>
         </div>
 
