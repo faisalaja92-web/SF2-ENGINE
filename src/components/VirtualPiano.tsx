@@ -111,7 +111,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-40 bg-[#0e1015]/95 border-t-2 border-amber-500 shadow-[0_-10px_35px_rgba(0,0,0,0.95)] p-1 sm:p-2 select-none font-mono">
+    <div className="absolute bottom-0 left-0 right-0 z-40 bg-[#0e1015]/98 border-t border-amber-500/70 shadow-[0_-6px_20px_rgba(0,0,0,0.8)] p-1 select-none font-mono">
       {/* Controls Bar */}
       <div className="flex items-center justify-between pb-1 px-1 text-xs">
         {/* Octave Shift */}
@@ -165,7 +165,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
             onPointerMove={handlePitchBendPointerMove}
             onPointerUp={handlePitchBendPointerUp}
             onPointerCancel={handlePitchBendPointerUp}
-            className="w-7 h-18 sm:h-20 bg-[#161820] border border-[#353a47] rounded relative cursor-ns-resize flex items-center justify-center shadow-inner"
+            className="w-6 h-14 sm:h-16 bg-[#161820] border border-[#353a47] rounded relative cursor-ns-resize flex items-center justify-center shadow-inner"
             title="Pitch Bend Wheel"
           >
             <div className="absolute w-full h-[1px] bg-amber-600/70 top-1/2 pointer-events-none" />
@@ -197,7 +197,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
         <div
           ref={keyboardContainerRef}
           onPointerMove={handleContainerPointerMove}
-          className="relative flex h-20 sm:h-24 bg-[#0a0c10] p-1 rounded border-2 border-[#2b303d] overflow-x-auto touch-none"
+          className="relative flex h-16 sm:h-20 bg-[#0a0c10] p-1 rounded border-2 border-[#2b303d] overflow-x-auto touch-none"
         >
           {Array.from({ length: totalNotes }).map((_, i) => {
             const note = startMidi + i;
@@ -216,12 +216,12 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
             const blackCents = hasBlackKey ? (scaleTuning.offsets[nextPitchClass] ?? 0) : 0;
 
             return (
-              <div key={note} className="relative flex flex-col justify-end w-8 sm:w-9 select-none">
+              <div key={note} className="relative flex flex-col justify-end w-7 sm:w-8 select-none">
                 {/* White Key */}
                 <div
                   data-note={note}
                   onPointerDown={(e) => handleKeyPointerDown(note, e)}
-                  className={`w-full h-18 sm:h-22 rounded-b border border-zinc-500 cursor-pointer flex flex-col justify-end items-center pb-1 transition-all ${
+                  className={`w-full h-14 sm:h-18 rounded-b border border-zinc-500 cursor-pointer flex flex-col justify-end items-center pb-1 transition-all ${
                     isPressed
                       ? 'bg-gradient-to-b from-yellow-200 to-amber-400 text-black font-black shadow-[0_0_12px_#f59e0b]'
                       : 'bg-gradient-to-b from-white to-zinc-200 hover:bg-zinc-100 text-black'
@@ -240,7 +240,7 @@ export const VirtualPiano: React.FC<VirtualPianoProps> = ({
                   <div
                     data-note={nextNote}
                     onPointerDown={(e) => handleKeyPointerDown(nextNote, e)}
-                    className={`absolute top-0 -right-2.5 sm:-right-3 w-5 sm:w-5.5 h-11 sm:h-14 z-20 rounded-b cursor-pointer flex flex-col justify-end items-center pb-0.5 transition-all border border-black ${
+                    className={`absolute top-0 -right-2.5 sm:-right-3 w-5 sm:w-5.5 h-9 sm:h-12 z-20 rounded-b cursor-pointer flex flex-col justify-end items-center pb-0.5 transition-all border border-black ${
                       isBlackPressed
                         ? 'bg-gradient-to-b from-yellow-300 to-amber-500 text-black font-black shadow-[0_0_12px_#f59e0b]'
                         : 'bg-gradient-to-b from-[#2b2d34] via-[#1a1c22] to-black hover:bg-zinc-800 text-white'
