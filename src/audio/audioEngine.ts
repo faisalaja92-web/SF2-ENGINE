@@ -61,6 +61,7 @@ export class AudioEngine {
   private heldKeys: Set<number> = new Set();
   private lastNotePlayed: number | null = null;
   private lastFreqPlayed: number | null = null;
+  private tercaHarmonyNotes: Map<number, number> = new Map();
 
   // Controllers
   public pitchBend = 0; // -1.0 to +1.0
@@ -418,7 +419,8 @@ export class AudioEngine {
     velocity: number,
     layers: SoundLayer[],
     efx: EfxSettings,
-    scaleTuning: ArabicScaleTuning
+    scaleTuning: ArabicScaleTuning,
+    isHarmonyVoice = false
   ) {
     const ctx = this.initContext();
     this.heldKeys.add(note);
@@ -427,7 +429,7 @@ export class AudioEngine {
       this.onMidiActivity();
     }
 
-    if (efx.mono) {
+    if (efx.mono && !isHarmonyVoice) {
       this.stopAllVoices(false);
     }
 
@@ -639,12 +641,38 @@ export class AudioEngine {
       }
     }
 
-    this.lastNotePlayed = note;
-    this.lastFreqPlayed = baseFreq;
+    // Terca adds a second note using the currently selected SoundFont/layers.
+    // The harmony voice is marked internally so it cannot recursively spawn more notes.
+    if (!isHarmonyVoice && efx.tercaEnabled) {
+      const interval = ({ minor3: 3, major3: 4, perfect5: 7, octave: 12 } as const)[efx.tercaInterval || 'minor3'];
+      const harmonyNote = note + interval;
+      if (harmonyNote <= 127) {
+        this.tercaHarmonyNotes.set(note, harmonyNote);
+        this.triggerNoteOn(
+          harmonyNote,
+          velocity * Math.max(0, Math.min(1, efx.tercaVolume ?? 0.65)),
+          layers,
+          { ...efx, tercaEnabled: false },
+          scaleTuning,
+          true
+        );
+      }
+    }
+
+    if (!isHarmonyVoice) {
+      this.lastNotePlayed = note;
+      this.lastFreqPlayed = baseFreq;
+    }
   }
 
   public triggerNoteOff(note: number, layers: SoundLayer[], efx: EfxSettings) {
     this.heldKeys.delete(note);
+    const harmonyNote = this.tercaHarmonyNotes.get(note);
+    if (harmonyNote !== undefined) {
+      this.tercaHarmonyNotes.delete(note);
+      this.heldKeys.delete(harmonyNote);
+      this.releaseNoteVoices(harmonyNote, layers, efx);
+    }
     if (this.sustainPedal) {
       this.sustainedNotes.add(note);
       return;
