@@ -728,6 +728,7 @@ export class AudioEngine {
     });
     this.activeVoices.clear();
     this.sustainedNotes.clear();
+    this.tercaHarmonyNotes.clear();
   }
 
   private cleanupVoice(voice: ActiveVoice) {
