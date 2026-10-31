@@ -134,7 +134,7 @@ export const DEFAULT_EFX: EfxSettings = {
     humanVibrato: 0.35,
     continuousLegato: true,
   },
-  reverbEnabled: true,
+  reverbEnabled: false,
   reverbWet: 0.2,
   reverbDecay: 1.8,
   delayEnabled: false,
