@@ -16,6 +16,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download bundled GeneralUser GS SoundFont
+        shell: bash
+        run: |
+          mkdir -p public/assets
+          curl -fL --retry 3 --retry-delay 2 \
+            https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/main/GeneralUser-GS.sf2 \
+            -o public/assets/GeneralUser-GS.sf2
+          echo "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe  public/assets/GeneralUser-GS.sf2" | sha256sum -c -
+          curl -fL --retry 3 --retry-delay 2 \
+            https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/main/documentation/LICENSE.txt \
+            -o public/assets/GeneralUser-GS-LICENSE.txt
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
