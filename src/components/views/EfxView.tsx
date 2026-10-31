@@ -284,16 +284,16 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
             <div className="bg-[#0b0e14] p-1 rounded border border-[#1d222e]">
               <div className="flex justify-between text-[8px] font-mono text-zinc-400 mb-0.5">
                 <span>REVERB WET</span>
-                <span className="text-amber-400 font-bold">{Math.round((efx.reverbWet || 0.2) * 100)}%</span>
+                <span className="text-amber-400 font-bold">{Math.round((efx.reverbWet ?? 0.2) * 100)}%</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="0.8"
-                step="0.02"
-                value={efx.reverbWet || 0.2}
+                step="0.01"
+                value={efx.reverbWet ?? 0.2}
                 onChange={(e) => onUpdateEfx({ reverbWet: parseFloat(e.target.value) })}
-                className="w-full accent-amber-400 h-1 bg-zinc-900 rounded"
+                className="w-full accent-amber-400 h-3 bg-zinc-900 rounded touch-none"
               />
             </div>
 
@@ -310,7 +310,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
                 step="0.1"
                 value={efx.reverbDecay || 1.8}
                 onChange={(e) => onUpdateEfx({ reverbDecay: parseFloat(e.target.value) })}
-                className="w-full accent-amber-400 h-1.5 bg-zinc-900 rounded"
+                className="w-full accent-amber-400 h-3 bg-zinc-900 rounded touch-none"
               />
             </div>
 
@@ -318,14 +318,14 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
             <div className="bg-[#0b0e14] p-1.5 rounded border border-[#1d222e]">
               <div className="flex justify-between text-[9px] font-mono text-zinc-400 mb-1">
                 <span>DELAY WET</span>
-                <span className="text-amber-400 font-bold">{Math.round((efx.delayWet || 0.15) * 100)}%</span>
+                <span className="text-amber-400 font-bold">{Math.round((efx.delayWet ?? 0.15) * 100)}%</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="0.6"
-                step="0.02"
-                value={efx.delayWet || 0.15}
+                step="0.01"
+                value={efx.delayWet ?? 0.15}
                 onChange={(e) => onUpdateEfx({ delayWet: parseFloat(e.target.value) })}
                 className="w-full accent-amber-400 h-1.5 bg-zinc-900 rounded"
               />
@@ -335,14 +335,14 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
             <div className="bg-[#0b0e14] p-1.5 rounded border border-[#1d222e]">
               <div className="flex justify-between text-[9px] font-mono text-zinc-400 mb-1">
                 <span>FEEDBACK</span>
-                <span className="text-amber-400 font-bold">{Math.round((efx.delayFeedback || 0.3) * 100)}%</span>
+                <span className="text-amber-400 font-bold">{Math.round((efx.delayFeedback ?? 0.3) * 100)}%</span>
               </div>
               <input
                 type="range"
                 min="0"
                 max="0.75"
-                step="0.02"
-                value={efx.delayFeedback || 0.3}
+                step="0.01"
+                value={efx.delayFeedback ?? 0.3}
                 onChange={(e) => onUpdateEfx({ delayFeedback: parseFloat(e.target.value) })}
                 className="w-full accent-amber-400 h-1.5 bg-zinc-900 rounded"
               />
