@@ -270,7 +270,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                 <button
                   key={item.id}
                   onClick={() => onSelectView(item.id)}
-                  className={`relative flex-1 flex flex-col items-center justify-center rounded-[4px] font-mono text-[10px] sm:text-xs tracking-wider transition-all shadow-md ${
+                  className={`relative flex-1 min-h-[42px] flex flex-col items-center justify-center rounded-lg font-mono text-[10px] sm:text-xs tracking-wider transition-all ${
                     isActive
                       ? 'bg-amber-400 text-[#111827] font-black border border-amber-200 shadow-[0_3px_12px_rgba(245,158,11,0.22)]'
                       : 'bg-[#202d42] text-[#c5d2e4] border border-[#3a4b65] hover:bg-[#293a55] hover:text-white font-bold active:scale-95'
