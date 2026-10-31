@@ -72,7 +72,12 @@ export interface AcousticExpressionSettings {
   continuousLegato: boolean;
 }
 
+export type TercaInterval = 'minor3' | 'major3' | 'perfect5' | 'octave';
+
 export interface EfxSettings {
+  tercaEnabled: boolean;
+  tercaInterval: TercaInterval;
+  tercaVolume: number;
   portamento: boolean;
   glideTime: number; // seconds
   legato: boolean;
