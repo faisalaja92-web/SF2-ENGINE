@@ -20,13 +20,13 @@
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: #0b1220; }
 ::-webkit-scrollbar-thumb { background: #334766; border-radius: 3px; }
-input[type="range"] { min-width: 0; accent-color: #d6a642; }
+input[type="range"] { min-width: 0; min-height: 24px; accent-color: #d6a642; touch-action: none; cursor: pointer; }
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
+  -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
   background: #e0b34f; border: 1px solid #fff0c2; box-shadow: 0 0 4px #d6a64266; cursor: pointer;
 }
 input[type="range"]::-moz-range-thumb {
-  height: 12px; width: 12px; border-radius: 50%; background: #e0b34f;
+  height: 20px; width: 20px; border-radius: 50%; background: #e0b34f;
   border: 1px solid #fff0c2; cursor: pointer;
 }
 @media (max-height: 500px) {
