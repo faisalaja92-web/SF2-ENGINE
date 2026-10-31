@@ -199,6 +199,8 @@ export default function App() {
       : target.efx);
     setEqualizer(target.equalizer);
     setScaleTuning(target.scale);
+    setMasterOctave(target.masterOctave ?? 0);
+    setMasterTranspose(target.masterTranspose ?? 0);
     if (target.split) {
       setSplitSettings(target.split);
     } else {
@@ -227,6 +229,8 @@ export default function App() {
           equalizer: { ...equalizer },
           scale: JSON.parse(JSON.stringify(scaleTuning)),
           split: JSON.parse(JSON.stringify(splitSettings)),
+          masterOctave,
+          masterTranspose,
         };
       }
       return b;
@@ -236,6 +240,29 @@ export default function App() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBanks));
     } catch {}
+  };
+
+
+  const handleDeleteBank = (bankId: number) => {
+    const emptyTemplate = INITIAL_BANKS.find((bank) => bank.id === bankId) || INITIAL_BANKS[0];
+    const updatedBanks = banks.map((bank) => bank.id === bankId
+      ? JSON.parse(JSON.stringify(emptyTemplate)) as SoundBank
+      : bank);
+    setBanks(updatedBanks);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBanks)); } catch {}
+    if (activeBankId === bankId) {
+      const empty = JSON.parse(JSON.stringify(emptyTemplate)) as SoundBank;
+      audioEngine.stopAllVoices(false);
+      setActiveNotes(new Set());
+      setLayers(empty.layers);
+      setEfx({ ...empty.efx });
+      setEqualizer({ ...empty.equalizer });
+      setScaleTuning({ ...empty.scale });
+      setSplitSettings(empty.split || { enabled: false, splitPoint: 48, lowerLayers: [1], upperLayers: [2, 3, 4], lowerOctave: 0, upperOctave: 0 });
+      setMasterOctave(0);
+      setMasterTranspose(0);
+      setIsTransposeActive(false);
+    }
   };
 
   // Single Tap on a sound: Switch directly & smoothly (Point 3)
@@ -503,7 +530,15 @@ export default function App() {
             activeBankId={activeBankId}
             onSelectBank={handleSelectBank}
             onSaveBank={handleSaveBank}
+            onDeleteBank={handleDeleteBank}
             currentLayerNames={currentLayerNames}
+            splitSettings={splitSettings}
+            onToggleSplit={handleToggleSplit}
+            onOpenSplitModal={() => setIsSplitModalOpen(true)}
+            masterOctave={masterOctave}
+            onOctaveChange={handleOctaveChange}
+            masterTranspose={masterTranspose}
+            onTransposeChange={handleTransposeChange}
           />
         )}
 
