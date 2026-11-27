@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ViewMenu } from '../types/synth';
 import { audioEngine } from '../audio/audioEngine';
-import { Maximize2, Minimize2, Keyboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Keyboard, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface WorkstationFrameProps {
   currentView: ViewMenu;
@@ -11,6 +11,7 @@ interface WorkstationFrameProps {
   onSelectPage: (page: number) => void;
   isPianoVisible: boolean;
   onTogglePiano: () => void;
+  onOpenSplit: () => void;
   children: React.ReactNode;
   midiActive: boolean;
   masterOctave?: number;
@@ -25,6 +26,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   onSelectPage,
   isPianoVisible,
   onTogglePiano,
+  onOpenSplit,
   children,
   midiActive,
   masterOctave = 0,
@@ -34,7 +36,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
   const [meterR, setMeterR] = useState(0);
   const [peakL, setPeakL] = useState(0);
   const [peakR, setPeakR] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   const pageScrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,14 +52,6 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
     animId = requestAnimationFrame(updateMeters);
     return () => cancelAnimationFrame(animId);
   }, []);
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
-    } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
-    }
-  };
 
   const scrollPages = (direction: 'left' | 'right') => {
     if (pageScrollContainerRef.current) {
@@ -108,10 +102,6 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
               <span className="text-[8px] font-mono font-bold tracking-wider text-zinc-300">MIDI</span>
             </div>
 
-            {/* Gold Title: SF2 Engine */}
-            <span className="font-black text-[10px] sm:text-xs tracking-wider bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.6)] ml-1">
-              SF2 Engine
-            </span>
           </div>
 
           {/* Center: Juzisound Dynamic Pagination (1 in Yellow, 2 3 4... in Deep Cobalt Blue) */}
@@ -183,17 +173,11 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
               <span className="text-[10px] font-bold font-mono">KEY</span>
             </button>
 
-            {/* Fullscreen Button */}
-            <button
-              onClick={toggleFullscreen}
-              className="p-1 rounded bg-[#1e222a] text-zinc-300 border border-[#383d4a] hover:border-zinc-500 active:scale-95"
-              title="Fullscreen"
-            >
-              {isFullscreen ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
-            </button>
+            <button onClick={() => setShowMoreMenu(v => !v)} className={`p-1.5 border ${showMoreMenu ? 'bg-emerald-500 text-black border-emerald-200' : 'bg-[#1e222a] text-zinc-200 border-[#383d4a]'}`} title="Menu tambahan" aria-label="Buka menu tambahan"><ChevronDown size={14} /></button>
           </div>
         </div>
 
+        {showMoreMenu && <div className="absolute top-8 right-2 z-40 w-48 border border-[#4d936b] bg-gradient-to-b from-[#202a25] to-[#101713] p-1.5 shadow-[0_8px_25px_rgba(0,0,0,.8)]"><div className="px-2 py-1 text-[8px] font-bold tracking-widest text-emerald-300 border-b border-[#344b3d]">MENU TAMBAHAN</div>{[{label:'SYNTH / SOUND EDITOR',action:()=>onSelectView('SYNTH')},{label:'FX RACK',action:()=>onSelectView('EFX')},{label:'MIXER / MASTER EQ',action:()=>onSelectView('MIXER')},{label:'KEYBOARD SPLIT',action:onOpenSplit},{label:'SCALE TUNING',action:()=>onSelectView('SCALE')}].map(item=><button key={item.label} onClick={()=>{item.action();setShowMoreMenu(false)}} className="w-full text-left px-2 py-2 mt-1 border border-[#3f6c50] bg-gradient-to-b from-[#2d7048] to-[#17432e] text-[9px] font-bold text-emerald-50 hover:brightness-125">{item.label}</button>)}</div>}
         {/* WORKSTATION MAIN BODY */}
         <div className="flex-1 flex overflow-hidden relative">
           
@@ -236,8 +220,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
                   onClick={() => onSelectView(item.id)}
                   className={`relative flex-1 flex flex-col items-center justify-center rounded-[3px] font-mono text-[9px] sm:text-[10px] tracking-tight transition-all shadow-md border-b-2 ${
                     isActive
-                      ? 'bg-gradient-to-b from-amber-300 via-amber-400 to-yellow-500 text-black font-black border border-yellow-200 shadow-[0_0_15px_rgba(245,158,11,0.7)] transform scale-[1.02]'
-                      : 'bg-gradient-to-b from-[#262a30] via-[#1d2026] to-[#16191f] text-[#b6c7be] border border-[#333842] hover:border-zinc-500 hover:text-white font-bold active:scale-98'
+                      ? 'bg-gradient-to-b from-[#65c58b] via-[#27965a] to-[#17663d] text-white font-black border border-[#9be7b6] shadow-[0_0_10px_rgba(34,197,94,0.35)] transform scale-[1.02]'
+                      : 'bg-gradient-to-b from-[#397d57] via-[#286b47] to-[#17452f] text-[#e2f5e8] border border-[#4d936b] hover:brightness-110 hover:text-white font-bold active:scale-98'
                   }`}
                 >
                   {/* Yellow dash LED on Scala like in Image 1 */}
