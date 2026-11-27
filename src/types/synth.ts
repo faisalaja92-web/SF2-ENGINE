@@ -141,4 +141,4 @@ export interface Mp3Track {
   isCustom?: boolean;
 }
 
-export type ViewMenu = 'LIST' | 'BANK' | 'LOAD' | 'MIXER' | 'EFX' | 'SCALE' | 'MP3' | 'TERCIA';
+export type ViewMenu = 'LIST' | 'BANK' | 'LOAD' | 'MIXER' | 'EFX' | 'SCALE' | 'MP3' | 'TERCIA' | 'SYNTH';
