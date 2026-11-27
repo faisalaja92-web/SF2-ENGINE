@@ -11,12 +11,12 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
   const acoustic = efx.acousticEngine;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between p-1.5 sm:p-2 bg-[#171920] text-zinc-100 font-sans select-none overflow-hidden">
+    <div className="w-full h-full flex flex-col justify-between p-1 sm:p-1.5 bg-[#111419] text-zinc-100 font-sans select-none overflow-hidden">
       {/* Top Header Row (Juzisound style with quick switches) */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#2b303d] text-xs shrink-0 px-1">
+      <div className="flex items-center justify-between pb-1 border-b border-[#30343c] text-[10px] shrink-0 px-1">
         <div className="flex items-center gap-1.5">
           <Activity size={14} className="text-amber-400" />
-          <span className="font-mono font-bold text-xs tracking-wider text-zinc-200">
+          <span className="font-mono font-bold text-[10px] tracking-wide text-zinc-200">
             DSP EFFECTS &amp; ACOUSTIC ENGINE
           </span>
         </div>
@@ -27,7 +27,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
             onClick={() => onUpdateEfx({ mono: !efx.mono })}
             className={`px-2.5 py-0.5 rounded font-bold border transition-all ${
               efx.mono
-                ? 'bg-gradient-to-b from-amber-400 to-yellow-500 text-black border-yellow-200 font-black shadow-[0_0_8px_#f59e0b]'
+                ? 'bg-gradient-to-b from-[#f4d36a] via-[#d9a72f] to-[#9b6a16] text-black border-[#ffe69a] font-black shadow-[0_0_8px_#f59e0b]'
                 : 'bg-[#1e222b] text-zinc-400 border-[#2d323f]'
             }`}
           >
@@ -49,15 +49,15 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
       </div>
 
       {/* Main Grid: 2 Panels styled after Image 2 CRT Screen & Rotary Knobs */}
-      <div className="grid grid-cols-12 gap-2 flex-1 py-1 overflow-hidden">
+      <div className="grid grid-cols-12 gap-1 flex-1 py-1 overflow-hidden">
         
         {/* Left Panel: Legato & Acoustic Modeling (6 Cols) */}
-        <div className="col-span-6 bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-6 bg-[#17191e] border border-[#3a3d43] rounded-[3px] p-1.5 flex flex-col justify-between overflow-hidden shadow-inner">
           {/* Panel Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
               <Wind size={13} className="text-amber-400" />
-              <span className="text-xs font-bold text-zinc-200 font-mono">LEGATO &amp; GLIDE ENGINE</span>
+              <span className="text-[10px] font-bold text-zinc-200 font-mono">LEGATO &amp; GLIDE ENGINE</span>
             </div>
             
             <button
@@ -171,7 +171,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
                 step="0.005"
                 value={efx.legatoSpeed || 0.05}
                 onChange={(e) => onUpdateEfx({ legatoSpeed: parseFloat(e.target.value) })}
-                className="flex-1 accent-amber-400 h-1.5 bg-[#0a0c10] rounded"
+                className="flex-1 accent-[#d8b34a] h-1.5 bg-[#0a0c10] rounded"
               />
               <span className="text-[10px] font-bold text-amber-400 w-12 text-right">
                 {Math.round((efx.legatoSpeed || 0.05) * 1000)}ms
@@ -215,7 +215,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
         </div>
 
         {/* Right Panel: Reverb & Delay Console (6 Cols) */}
-        <div className="col-span-6 bg-[#101318] border border-[#262c38] rounded-lg p-2 flex flex-col justify-between overflow-hidden shadow-inner">
+        <div className="col-span-6 bg-[#101318] border border-[#262c38] rounded-[3px] p-2 flex flex-col justify-between overflow-hidden shadow-inner">
           {/* Header */}
           <div className="flex items-center justify-between pb-1 border-b border-[#222836]">
             <div className="flex items-center gap-1.5">
@@ -254,7 +254,7 @@ export const EfxView: React.FC<EfxViewProps> = ({ efx, onUpdateEfx }) => {
           {/* 4 Rotary / Fader Knobs for FX Space */}
           <div className="grid grid-cols-2 gap-2 my-1">
             {/* Reverb Mix */}
-            <div className="bg-[#0b0e14] p-1.5 rounded border border-[#1d222e]">
+            <div className="bg-[#0b0d10] p-1 rounded-[2px] border border-[#343943]">
               <div className="flex justify-between text-[9px] font-mono text-zinc-400 mb-1">
                 <span>REVERB WET</span>
                 <span className="text-amber-400 font-bold">{Math.round((efx.reverbWet || 0.2) * 100)}%</span>
