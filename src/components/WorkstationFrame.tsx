@@ -32,6 +32,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 }) => {
   const [meterL, setMeterL] = useState(0);
   const [meterR, setMeterR] = useState(0);
+  const [peakL, setPeakL] = useState(0);
+  const [peakR, setPeakR] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const pageScrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +43,8 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
       const levels = audioEngine.getMeterLevels();
       setMeterL(levels.left);
       setMeterR(levels.right);
+      setPeakL((peak) => levels.left >= peak ? levels.left : Math.max(0, peak - 0.65));
+      setPeakR((peak) => levels.right >= peak ? levels.right : Math.max(0, peak - 0.65));
       animId = requestAnimationFrame(updateMeters);
     };
     animId = requestAnimationFrame(updateMeters);
@@ -81,7 +85,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
       <div className="flex-1 border-2 sm:border-[3px] border-[#252830] rounded-lg sm:rounded-xl bg-[#181a20] shadow-[0_0_35px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden relative">
         
         {/* TOP HARDWARE BAR (Modeled exactly after Image 1) */}
-        <div className="h-10 sm:h-11 bg-gradient-to-b from-[#22242a] via-[#1c1e24] to-[#16171d] border-b border-[#2d313b] flex items-center justify-between px-2 sm:px-2.5 relative z-10 shrink-0">
+        <div className="h-7 sm:h-8 bg-gradient-to-b from-[#22242a] via-[#1c1e24] to-[#16171d] border-b border-[#2d313b] flex items-center justify-between px-1.5 sm:px-2 relative z-10 shrink-0">
           
           {/* Left: Branding & Hardware Status Box */}
           <div className="flex items-center gap-1.5 shrink-0">
@@ -104,7 +108,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
             </div>
 
             {/* Gold Title: SF2 Engine */}
-            <span className="font-black text-xs sm:text-sm tracking-wider bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.6)] ml-1">
+            <span className="font-black text-[10px] sm:text-xs tracking-wider bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(245,158,11,0.6)] ml-1">
               SF2 Engine
             </span>
           </div>
@@ -192,65 +196,24 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
         {/* WORKSTATION MAIN BODY */}
         <div className="flex-1 flex overflow-hidden relative">
           
-          {/* LEFT SIDE: Authentic Juzisound Dual Channel Full-Height Peak Meter */}
-          <div className="w-5 sm:w-6 md:w-7 bg-[#0d0e12] border-r border-[#262a33] flex flex-col justify-between items-center py-1 px-0.5 select-none shrink-0">
-            {/* Top Peak Value Header */}
-            <span className="text-[8px] font-mono font-black text-red-500 tracking-tighter">
-              -10
-            </span>
-
-            {/* Segmented Dual LED Meter Bars (Green -> Yellow -> Red -> Striped Peak at top) */}
-            <div className="flex-1 flex justify-center items-end gap-1 my-1 w-full px-0.5">
-              {/* L Channel */}
-              <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                {/* Diagonal warning stripes top zone (lights up when signal reaches peak) */}
-                <div
-                  className={`absolute top-0 inset-x-0 h-3 pointer-events-none z-10 transition-opacity duration-100 ${
-                    meterL > 88
-                      ? 'opacity-100 bg-[repeating-linear-gradient(45deg,#ff1744,#ff1744_2px,#000_2px,#000_4px)] shadow-[0_0_8px_#ff1744]'
-                      : 'opacity-35 bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_2px,#000_2px,#000_4px)]'
-                  }`}
-                />
-                
-                {/* Dynamic LED Fill with full-height responsiveness reaching 100% */}
-                <div
-                  className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75 shadow-[0_0_8px_rgba(255,23,68,0.7)]"
-                  style={{ height: `${Math.min(100, meterL)}%` }}
-                />
-
-                {/* Horizontal LED tick segmentation overlay */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />
-              </div>
-
-              {/* R Channel */}
-              <div className="flex-1 h-full bg-[#08090b] rounded-[1px] border border-[#1f222a] relative overflow-hidden flex flex-col justify-end">
-                {/* Diagonal warning stripes top zone */}
-                <div
-                  className={`absolute top-0 inset-x-0 h-3 pointer-events-none z-10 transition-opacity duration-100 ${
-                    meterR > 88
-                      ? 'opacity-100 bg-[repeating-linear-gradient(45deg,#ff1744,#ff1744_2px,#000_2px,#000_4px)] shadow-[0_0_8px_#ff1744]'
-                      : 'opacity-35 bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_2px,#000_2px,#000_4px)]'
-                  }`}
-                />
-
-                {/* Dynamic LED Fill */}
-                <div
-                  className="w-full bg-gradient-to-t from-[#00e676] via-[#ffeb3b] to-[#ff1744] transition-all duration-75 shadow-[0_0_8px_rgba(255,23,68,0.7)]"
-                  style={{ height: `${Math.min(100, meterR)}%` }}
-                />
-
-                {/* Horizontal LED tick segmentation overlay */}
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,transparent,transparent_2px,#000_2px,#000_3px)] opacity-55 pointer-events-none" />
-              </div>
+          {/* LEFT SIDE: slim Juzisound-style stereo LED meter with white peak-hold caps */}
+          <div className="w-[15px] sm:w-[17px] bg-[#08090b] border-r border-[#292b30] flex flex-col items-center justify-between py-1 px-[2px] select-none shrink-0">
+            <span className="text-[6px] leading-none font-mono font-bold text-zinc-500">0</span>
+            <div className="flex-1 flex items-stretch justify-center gap-[2px] w-full my-1">
+              {[{label:'L',level:meterL,peak:peakL},{label:'R',level:meterR,peak:peakR}].map((channel) => (
+                <div key={channel.label} className="relative flex-1 h-full bg-[#101713] border border-[#202a24] overflow-hidden flex flex-col-reverse justify-start">
+                  {Array.from({length:32},(_,i)=>{
+                    const threshold=(i+1)/32*100;
+                    const lit=channel.level>=threshold;
+                    const color=i>=28?'#f04444':i>=22?'#e7d34b':'#43b86b';
+                    return <div key={i} className="w-full flex-1 border-t border-black/70" style={{background:lit?color:"#172019",boxShadow:lit?"0 0 3px "+color:"none"}} />;
+                  })}
+                  <div className="absolute left-0 right-0 h-[2px] bg-white shadow-[0_0_4px_#fff] z-10" style={{bottom:(Math.min(100,channel.peak)-1)+"%"}} />
+                </div>
+              ))}
             </div>
-
-            {/* Bottom Channel Labels */}
-            <div className="flex justify-around w-full text-[8px] font-mono font-bold text-zinc-400 border-t border-[#222630] pt-0.5">
-              <span>L</span>
-              <span>R</span>
-            </div>
+            <div className="flex justify-center gap-1 w-full text-[6px] leading-none font-mono font-bold text-zinc-400"><span>L</span><span>R</span></div>
           </div>
-
           {/* CENTER VIEWPORT (Dark gunmetal tone, smooth scrolling when KEY is open) */}
           <div
             className={`flex-1 bg-[#16181f] flex flex-col relative transition-all ${
@@ -263,14 +226,14 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
           </div>
 
           {/* RIGHT SIDE MENU (Exact Juzisound Bevelled Metallic Buttons from Image 1 & 2) */}
-          <div className="w-16 sm:w-20 md:w-24 bg-gradient-to-b from-[#181a20] via-[#14161b] to-[#101215] border-l border-[#262a33] flex flex-col justify-between p-1 sm:p-1.5 gap-1 select-none shrink-0 shadow-inner">
+          <div className="w-14 sm:w-[68px] md:w-[76px] bg-gradient-to-b from-[#181a20] via-[#14161b] to-[#101215] border-l border-[#262a33] flex flex-col justify-between p-1 sm:p-1 gap-0.5 select-none shrink-0 shadow-inner">
             {rightMenuItems.map((item) => {
               const isActive = currentView === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => onSelectView(item.id)}
-                  className={`relative flex-1 flex flex-col items-center justify-center rounded-[4px] font-mono text-[10px] sm:text-xs tracking-wider transition-all shadow-md ${
+                  className={`relative flex-1 flex flex-col items-center justify-center rounded-[3px] font-mono text-[9px] sm:text-[10px] tracking-tight transition-all shadow-md border-b-2 ${
                     isActive
                       ? 'bg-gradient-to-b from-amber-300 via-amber-400 to-yellow-500 text-black font-black border border-yellow-200 shadow-[0_0_15px_rgba(245,158,11,0.7)] transform scale-[1.02]'
                       : 'bg-gradient-to-b from-[#262a30] via-[#1d2026] to-[#16191f] text-[#b6c7be] border border-[#333842] hover:border-zinc-500 hover:text-white font-bold active:scale-98'
