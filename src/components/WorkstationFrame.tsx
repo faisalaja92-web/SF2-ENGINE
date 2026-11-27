@@ -157,7 +157,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
 
             {/* Juzisound Bank Selector Badge (e.g. 0000 v) */}
             <div className="hidden md:flex items-center gap-0.5 px-2 py-0.5 rounded bg-[#101b33] border border-[#203a70] text-[#7ea5f8] text-[10px] font-mono font-bold">
-              <span>{String(currentPage * 8 - 7).padStart(4, '0')}</span>
+              <span>{String(currentPage * 10 - 9).padStart(4, '0')}</span>
               <span className="text-[8px]">▾</span>
             </div>
           </div>
