@@ -54,7 +54,7 @@ export default function App() {
   // SoundFont Presets and Dynamic Pagination (Point 2)
   const [allPresets, setAllPresets] = useState<SoundPreset[]>(INITIAL_SF2_PRESETS);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = Math.max(1, Math.ceil(allPresets.length / 8));
+  const totalPages = Math.max(1, Math.ceil(allPresets.length / 10));
 
   // Default view is LIST
   const [currentView, setCurrentView] = useState<ViewMenu>('LIST');
@@ -434,7 +434,7 @@ export default function App() {
         masterOctave={masterOctave}
         masterTranspose={masterTranspose}
       >
-        {/* VIEW 1: LIST (SoundFont Presets with 8 per page, single-tap switch & 1s hold layer, and [- 0 +] Octave/Transpose bar) */}
+        {/* VIEW 1: LIST (SoundFont Presets with 10 per page, single-tap switch & 1s hold layer, and [- 0 +] Octave/Transpose bar) */}
         {currentView === 'LIST' && (
           <ListView
             layers={layers}
