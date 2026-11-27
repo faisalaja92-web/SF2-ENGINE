@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { getTerciaHarmonyNotes, HarmonyMode, HarmonyScale } from './audio/terciaHarmony';
 import {
   ArabicScaleTuning,
   EfxSettings,
@@ -20,6 +19,7 @@ import { ListView } from './components/views/ListView';
 import { BankView } from './components/views/BankView';
 import { ScaleView } from './components/views/ScaleView';
 import { TerciaView } from './components/views/TerciaView';
+import { SynthView } from './components/views/SynthView';
 import { EfxView } from './components/views/EfxView';
 import { MixerView } from './components/views/MixerView';
 import { LoadView } from './components/views/LoadView';
@@ -62,9 +62,6 @@ export default function App() {
   const [currentView, setCurrentView] = useState<ViewMenu>('LIST');
   const [terciaEnabled, setTerciaEnabled] = useState(false);
   const [terciaInterval, setTerciaInterval] = useState(4);
-  const [terciaMode, setTerciaMode] = useState<HarmonyMode>('SCALE');
-  const [terciaRoot, setTerciaRoot] = useState(0);
-  const [terciaScale, setTerciaScale] = useState<HarmonyScale>('MAJOR');
   const [isPianoVisible, setIsPianoVisible] = useState<boolean>(false);
   const [isBooting, setIsBooting] = useState<boolean>(true);
 
@@ -276,14 +273,14 @@ export default function App() {
         }));
 
         audioEngine.triggerNoteOn(shiftedNote, velocity, splitLayers, efx, scaleTuning);
-         if (terciaEnabled) getTerciaHarmonyNotes(shiftedNote, terciaMode, terciaRoot, terciaScale).forEach((harmonyNote) => audioEngine.triggerNoteOn(harmonyNote, velocity * 0.72, splitLayers, efx, scaleTuning));
+         if (terciaEnabled) audioEngine.triggerNoteOn(Math.min(127, shiftedNote + terciaInterval), velocity * 0.72, splitLayers, efx, scaleTuning);
       } else {
         const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
         audioEngine.triggerNoteOn(shifted, velocity, layers, efx, scaleTuning);
-         if (terciaEnabled) getTerciaHarmonyNotes(shifted, terciaMode, terciaRoot, terciaScale).forEach((harmonyNote) => audioEngine.triggerNoteOn(harmonyNote, velocity * 0.72, layers, efx, scaleTuning));
+         if (terciaEnabled) audioEngine.triggerNoteOn(Math.min(127, shifted + terciaInterval), velocity * 0.72, layers, efx, scaleTuning);
       }
     },
-    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings, terciaEnabled, terciaMode, terciaRoot, terciaScale]
+    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings, terciaEnabled]
   );
 
   const handleNoteOff = useCallback(
@@ -299,14 +296,14 @@ export default function App() {
         const zoneOctave = isLower ? splitSettings.lowerOctave : splitSettings.upperOctave;
         const shiftedNote = Math.max(0, Math.min(127, note + (masterOctave + zoneOctave) * 12 + masterTranspose));
         audioEngine.triggerNoteOff(shiftedNote, layers, efx);
-         if (terciaEnabled) getTerciaHarmonyNotes(shiftedNote, terciaMode, terciaRoot, terciaScale).forEach((harmonyNote) => audioEngine.triggerNoteOff(harmonyNote, layers, efx));
+         if (terciaEnabled) audioEngine.triggerNoteOff(Math.min(127, shiftedNote + terciaInterval), layers, efx);
       } else {
         const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
         audioEngine.triggerNoteOff(shifted, layers, efx);
-         if (terciaEnabled) getTerciaHarmonyNotes(shifted, terciaMode, terciaRoot, terciaScale).forEach((harmonyNote) => audioEngine.triggerNoteOff(harmonyNote, layers, efx));
+         if (terciaEnabled) audioEngine.triggerNoteOff(Math.min(127, shifted + terciaInterval), layers, efx);
       }
     },
-    [layers, efx, masterOctave, masterTranspose, splitSettings, terciaEnabled, terciaMode, terciaRoot, terciaScale]
+    [layers, efx, masterOctave, masterTranspose, splitSettings, terciaEnabled]
   );
 
   const handlePitchBendChange = (val: number) => {
@@ -441,6 +438,7 @@ export default function App() {
         onSelectPage={setCurrentPage}
         isPianoVisible={isPianoVisible}
         onTogglePiano={() => setIsPianoVisible(!isPianoVisible)}
+        onOpenSplit={() => setIsSplitModalOpen(true)}
         midiActive={midiActive}
         masterOctave={masterOctave}
         masterTranspose={masterTranspose}
@@ -488,8 +486,10 @@ export default function App() {
         )}
 
         {currentView === 'TERCIA' && (
-          <TerciaView enabled={terciaEnabled} mode={terciaMode} root={terciaRoot} scale={terciaScale} onEnabledChange={setTerciaEnabled} onModeChange={setTerciaMode} onRootChange={setTerciaRoot} onScaleChange={setTerciaScale} />
+          <TerciaView enabled={terciaEnabled} interval={terciaInterval} onEnabledChange={setTerciaEnabled} onIntervalChange={setTerciaInterval} />
         )}
+
+        {currentView === 'SYNTH' && <SynthView layers={layers} onUpdateLayer={handleUpdateLayer} />}
 
         {/* VIEW 4: EFX (Legato speed/attack/release, Portamento, Mono, Acoustic Modeling) */}
         {currentView === 'EFX' && (
