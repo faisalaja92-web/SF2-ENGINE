@@ -97,9 +97,9 @@ export const ListView: React.FC<ListViewProps> = ({
   // 1-second hold to toggle layer ON / OFF
   const HOLD_DURATION_MS = 1000;
 
-  // 8 presets for current page
-  const startIndex = (currentPage - 1) * 8;
-  const pagePresets = allPresets.slice(startIndex, startIndex + 8);
+  // 10 presets per page, arranged as two columns of five
+  const startIndex = (currentPage - 1) * 10;
+  const pagePresets = allPresets.slice(startIndex, startIndex + 10);
 
   // Active preset IDs
   const activePresetMap = new Map<string, number>();
@@ -152,7 +152,7 @@ export const ListView: React.FC<ListViewProps> = ({
     }
   };
 
-  const slots = Array.from({ length: 8 }, (_, i) => {
+  const slots = Array.from({ length: 10 }, (_, i) => {
     const preset = pagePresets[i] || null;
     return {
       index: i + 1,
@@ -175,7 +175,7 @@ export const ListView: React.FC<ListViewProps> = ({
       </div>
 
       {/* Main 8 Preset Slots Grid - Exactly matched with BankView (MAIN) layout */}
-      <div className="grid grid-cols-2 gap-1.5 flex-1 py-1 overflow-hidden">
+      <div className="grid grid-cols-2 grid-rows-5 grid-flow-col gap-1.5 flex-1 py-1 overflow-hidden">
         {slots.map((slot) => {
           const preset = slot.preset;
           const isSlotActive = preset && activePresetMap.has(preset.id);
