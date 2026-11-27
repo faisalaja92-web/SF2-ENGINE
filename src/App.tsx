@@ -18,6 +18,7 @@ import { WorkstationFrame } from './components/WorkstationFrame';
 import { ListView } from './components/views/ListView';
 import { BankView } from './components/views/BankView';
 import { ScaleView } from './components/views/ScaleView';
+import { TerciaView } from './components/views/TerciaView';
 import { EfxView } from './components/views/EfxView';
 import { MixerView } from './components/views/MixerView';
 import { LoadView } from './components/views/LoadView';
@@ -58,6 +59,8 @@ export default function App() {
 
   // Default view is LIST
   const [currentView, setCurrentView] = useState<ViewMenu>('LIST');
+  const [terciaEnabled, setTerciaEnabled] = useState(false);
+  const [terciaInterval, setTerciaInterval] = useState(4);
   const [isPianoVisible, setIsPianoVisible] = useState<boolean>(false);
   const [isBooting, setIsBooting] = useState<boolean>(true);
 
@@ -269,12 +272,14 @@ export default function App() {
         }));
 
         audioEngine.triggerNoteOn(shiftedNote, velocity, splitLayers, efx, scaleTuning);
+         if (terciaEnabled && shiftedNote + terciaInterval <= 127) audioEngine.triggerNoteOn(shiftedNote + terciaInterval, velocity * 0.82, splitLayers, efx, scaleTuning);
       } else {
         const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
         audioEngine.triggerNoteOn(shifted, velocity, layers, efx, scaleTuning);
+         if (terciaEnabled && shifted + terciaInterval <= 127) audioEngine.triggerNoteOn(shifted + terciaInterval, velocity * 0.82, layers, efx, scaleTuning);
       }
     },
-    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings]
+    [layers, efx, scaleTuning, triggerMidiLed, masterOctave, masterTranspose, splitSettings, terciaEnabled, terciaInterval]
   );
 
   const handleNoteOff = useCallback(
@@ -290,12 +295,14 @@ export default function App() {
         const zoneOctave = isLower ? splitSettings.lowerOctave : splitSettings.upperOctave;
         const shiftedNote = Math.max(0, Math.min(127, note + (masterOctave + zoneOctave) * 12 + masterTranspose));
         audioEngine.triggerNoteOff(shiftedNote, layers, efx);
+         if (terciaEnabled && shiftedNote + terciaInterval <= 127) audioEngine.triggerNoteOff(shiftedNote + terciaInterval, layers, efx);
       } else {
         const shifted = Math.max(0, Math.min(127, note + masterOctave * 12 + masterTranspose));
         audioEngine.triggerNoteOff(shifted, layers, efx);
+         if (terciaEnabled && shifted + terciaInterval <= 127) audioEngine.triggerNoteOff(shifted + terciaInterval, layers, efx);
       }
     },
-    [layers, efx, masterOctave, masterTranspose, splitSettings]
+    [layers, efx, masterOctave, masterTranspose, splitSettings, terciaEnabled, terciaInterval]
   );
 
   const handlePitchBendChange = (val: number) => {
@@ -474,6 +481,10 @@ export default function App() {
             scaleTuning={scaleTuning}
             onUpdateScale={setScaleTuning}
           />
+        )}
+
+        {currentView === 'TERCIA' && (
+          <TerciaView enabled={terciaEnabled} interval={terciaInterval} onEnabledChange={setTerciaEnabled} onIntervalChange={setTerciaInterval} />
         )}
 
         {/* VIEW 4: EFX (Legato speed/attack/release, Portamento, Mono, Acoustic Modeling) */}
