@@ -71,6 +71,7 @@ export const WorkstationFrame: React.FC<WorkstationFrameProps> = ({
     { id: 'MP3', label: 'Mp3' },
     { id: 'SCALE', label: 'Scala', badge: 'yellow' },
     { id: 'EFX', label: 'Effects' },
+    { id: 'TERCIA', label: 'Terca' },
     { id: 'MIXER', label: 'Mixer' },
     { id: 'LOAD', label: 'LOAD' },
     { id: 'BANK', label: 'MAIN' },
